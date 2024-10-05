@@ -49,10 +49,7 @@ export default {
   methods: {
     async fetchUsers() {
       try {
-        // Cambia localhost por 10.0.2.2
-        //const response = await fetch('https://pokeapi.co/api/v2/pokemon/ditto', {
-        const response = await fetch("https://10.0.2.2:8080/hello");
-
+        const response = await fetch("http://10.0.2.2:8080/users");
 
         if (!response.ok) {
           throw new Error('Error al obtener los usuarios');
