@@ -1,5 +1,6 @@
 package org.acme.resource; // Declaración de paquete para el recurso de tareas
 
+import org.acme.model.Project;
 import org.acme.model.Task; 
 import org.acme.repository.TaskRepository; 
 
@@ -28,13 +29,15 @@ public class TaskResource {
 
     @GET
     @Path("/{id}")
-    public Task getTask(@PathParam("id") Long id) {
+    public Response  getTask(@PathParam("id") Long id) {
         Task task = taskRepository.findById(id);
         if (task == null) {
             throw new NotFoundException("Task not found");
         }
-        return task;
+        return Response.ok(task).build(); 
+
     }
+
 
     @GET
     public List<Task> getAllTasks() {

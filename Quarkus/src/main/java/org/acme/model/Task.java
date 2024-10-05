@@ -1,14 +1,17 @@
+
 package org.acme.model; 
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
+import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Column;
 import java.util.Date;
 
 @Entity
+@Table(name = "tasks")
 public class Task {
 
     @Id
@@ -21,7 +24,7 @@ public class Task {
     @Column(nullable = false)  // Asegúrate de que el estado no sea nulo
     private String status; // Usando un String en lugar de un enum
 
-    private Date dueDate;
+    private Date created;
 
     @ManyToOne
     private Project project;
@@ -62,12 +65,12 @@ public class Task {
         this.status = status;
     }
 
-    public Date getDueDate() {
-        return dueDate;
+    public Date getCreated() {
+        return created;
     }
 
-    public void setDueDate(Date dueDate) {
-        this.dueDate = dueDate;
+    public void setCreated(Date created) {
+        this.created = created;
     }
 
     public Project getProject() {

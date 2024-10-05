@@ -1,3 +1,9 @@
+DROP DATABASE task_management;
+CREATE DATABASE task_management;
+
+
+
+
 CREATE DATABASE task_management;
 
 USE task_management;
@@ -24,8 +30,8 @@ CREATE TABLE tasks (
     title VARCHAR(100) NOT NULL,
     description TEXT,
     status ENUM('pending', 'in_progress', 'completed') DEFAULT 'pending',
-    due_date DATETIME,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created DATETIME,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,	
     project_id INT,
     user_id INT,
     FOREIGN KEY (project_id) REFERENCES projects(id),
@@ -64,25 +70,27 @@ INSERT INTO projects (name, description, user_id) VALUES
 ('Proyecto Gamma', 'Descripción del Proyecto Gamma', 3);  -- Asignado a alice_jones
 
 -- Insertar tareas para Proyecto Alpha
-INSERT INTO tasks (title, description, status, due_date, project_id, user_id) VALUES
+INSERT INTO tasks (title, description, status, created, project_id, user_id) VALUES
 ('Tarea 1 Alpha', 'Descripción de la Tarea 1 de Alpha', 'pending', '2024-10-10', 1, 1),
 ('Tarea 2 Alpha', 'Descripción de la Tarea 2 de Alpha', 'in_progress', '2024-10-15', 1, 1),
 ('Tarea 3 Alpha', 'Descripción de la Tarea 3 de Alpha', 'completed', '2024-10-20', 1, 1);
 
 -- Insertar tareas para Proyecto Beta
-INSERT INTO tasks (title, description, status, due_date, project_id, user_id) VALUES
+INSERT INTO tasks (title, description, status, created, project_id, user_id) VALUES
 ('Tarea 1 Beta', 'Descripción de la Tarea 1 de Beta', 'pending', '2024-10-12', 2, 2),
 ('Tarea 2 Beta', 'Descripción de la Tarea 2 de Beta', 'in_progress', '2024-10-18', 2, 2),
 ('Tarea 3 Beta', 'Descripción de la Tarea 3 de Beta', 'completed', '2024-10-25', 2, 2),
 ('Tarea 4 Beta', 'Descripción de la Tarea 4 de Beta', 'pending', '2024-10-30', 2, 2);
 
 -- Insertar tareas para Proyecto Gamma
-INSERT INTO tasks (title, description, status, due_date, project_id, user_id) VALUES
+INSERT INTO tasks (title, description, status, created, project_id, user_id) VALUES
 ('Tarea 1 Gamma', 'Descripción de la Tarea 1 de Gamma', 'completed', '2024-10-05', 3, 3),
 ('Tarea 2 Gamma', 'Descripción de la Tarea 2 de Gamma', 'pending', '2024-10-15', 3, 3),
 ('Tarea 3 Gamma', 'Descripción de la Tarea 3 de Gamma', 'in_progress', '2024-10-20', 3, 3),
 ('Tarea 4 Gamma', 'Descripción de la Tarea 4 de Gamma', 'completed', '2024-10-25', 3, 3),
 ('Tarea 5 Gamma', 'Descripción de la Tarea 5 de Gamma', 'pending', '2024-10-30', 3, 3);
+
+
 
 -- Insertar comentarios para Tarea 1 Alpha
 INSERT INTO comments (content, task_id, user_id) VALUES
@@ -114,4 +122,3 @@ INSERT INTO comments (content, task_id, user_id) VALUES
 -- Insertar comentarios para Tarea 2 Gamma
 INSERT INTO comments (content, task_id, user_id) VALUES
 ('Comentario para Tarea 2 Gamma', 7, 1);
-comments

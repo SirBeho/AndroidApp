@@ -10,7 +10,7 @@ import org.acme.model.Task;
 public class TaskRepository implements PanacheRepository<Task> {
 
     public List<Task> findByUserId(Long userId) {
-        return find("user.id", userId).list(); // Método para encontrar tareas por usuario
+        return find("user.id", userId).list(); 
     }
 
     // Método para buscar tareas por estado
