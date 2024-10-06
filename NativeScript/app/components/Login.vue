@@ -20,17 +20,13 @@
       <!-- Enlace para recuperar la contraseña -->
       <Label text="¿Olvidaste tu contraseña?" class="forgot-password" />
 
-      <!-- Botón de envío -->
-      
-      <!-- Botón para obtener usuarios (pruebas) -->
-      <Button text="Obtener Usuarios" @tap="fetchUsers" />
+      <Label v-if="errorMessage" :text="errorMessage" class="error-label" />
 
-      <!-- ListView para mostrar usuarios -->
-      <ListView v-if="users.length > 0" :items="users">
-        <v-template>
-          <Label :text="item.username" class="user-label" />
-        </v-template>
-      </ListView>
+      <!-- Botón de envío -->
+      <Button text="Iniciar sesión" @tap="login" class="submit-button" />
+
+
+
     </StackLayout>
   </Page>
 </template>
@@ -38,36 +34,63 @@
 
 
 <script>
+
+import * as applicationSettings from '@nativescript/core/application-settings';
+import Home from './Home';
+
 export default {
   data() {
     return {
-      username: '', // Almacena el valor del campo de usuario
-      password: '', // Almacena el valor del campo de contraseña
-      users: [] // Donde almacenarás los datos de la API
+      username: 'jhon',
+      password: 'admin',
+      errorMessage: ''
     };
   },
   methods: {
-    async fetchUsers() {
-      try {
-        const response = await fetch("http://10.0.2.2:8080/users");
+    async login() {
+      i
+      if (this.username && this.password) {
+        try {
+            const response = await fetch('http://10.0.2.2:8080/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+              username: this.username,
+              password: this.password
+            })
+          });
+          console.log('la solicitud:', response);
 
-        if (!response.ok) {
-          throw new Error('Error al obtener los usuarios');
+          if (response.ok) {
+            const userData = await response.json();
+            applicationSettings.setString("loggedInUser", JSON.stringify(userData));
+
+            this.errorMessage = '';
+            this.$navigateTo(Home); 
+            console.log('Usuario autenticado:', userData);
+          } else if (response.status === 401) {
+            console.log('Credenciales incorrectas');
+            this.errorMessage = 'Credenciales incorrectas. Intenta de nuevo.';
+          } else {
+            const errorText = await response.text();
+            this.errorMessage = `Error: ${errorText}`;
+          }
+        } catch (error) {
+          console.error('Error en la solicitud:', error);
+          alert('Error en la conexión con el servidor.');
         }
-
-        const data = await response.json();
-        console.log('Usuarios obtenidos:', data);
-        this.users = data; // Asigna los datos al array users
-
-      } catch (error) {
-        console.error('Error en la solicitud:', error);
-        alert('Error al obtener los usuarios. Por favor, intenta de nuevo.');
+      } else {
+        alert('Por favor, complete ambos campos.');
       }
-    }
+   
+
+  }
   }
 };
-
 </script>
+
 
 
 <style scoped>
@@ -151,5 +174,12 @@ export default {
 .action-bar {
   background-color: #007BFF;
   color: white;
+}
+
+.error-label {
+  color: red;
+  font-size: 16px;
+  margin-top: 10px;
+  text-align: center;
 }
 </style>

@@ -1,6 +1,6 @@
-package org.acme.resource; 
+package org.acme.resource;
 
-import org.acme.model.User; 
+import org.acme.model.User;
 import org.acme.repository.UserRepository;
 import org.acme.service.PasswordEncrypterService;
 import org.mindrot.jbcrypt.BCrypt;
@@ -21,22 +21,20 @@ public class LoginResource {
     @Inject
     PasswordEncrypterService passwordEncrypterService;
 
-    
- 
     @POST
     public Response login(User user) {
-        
-         User existingUser = userRepository.findByUsername(user.getUsername());
+
+        User existingUser = userRepository.findByUsername(user.getUsername());
+
         if (existingUser != null && BCrypt.checkpw(user.getPassword(), existingUser.getPassword())) {
             // Autenticación exitosa
             return Response.ok(existingUser).build();
         } else {
             // Autenticación fallida
             return Response.status(Response.Status.UNAUTHORIZED)
-                        .entity("Usuario o contraseña incorrectos").build();
+                    .entity("Usuario o contraseña incorrectos").build();
         }
     }
-
 
     @GET
     @Path("/encrypt")

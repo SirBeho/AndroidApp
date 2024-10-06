@@ -21,8 +21,8 @@ public class Task {
     private String title;
     private String description;
 
-    @Column(nullable = false)  // Asegúrate de que el estado no sea nulo
-    private String status; // Usando un String en lugar de un enum
+    @Column(nullable = false)  
+    private String status; 
 
     private Date created;
 
@@ -87,5 +87,13 @@ public class Task {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getUserId() {
+        return user.getId();
+    }
+
+    public Long getProjectId() {
+        return project.getId();
     }
 }
