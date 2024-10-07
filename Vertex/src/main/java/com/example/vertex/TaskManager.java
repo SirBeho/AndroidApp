@@ -1,8 +1,14 @@
+package com.example.vertex;
+
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import io.vertx.core.Vertx;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.client.WebClient;
 
 public class TaskManager {
+
     private final Map<String, TaskProgress> tasks = new ConcurrentHashMap<>();
     private final WebClient webClient;
 

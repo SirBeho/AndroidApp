@@ -36,8 +36,8 @@ public class MainVerticle extends AbstractVerticle {
 
     // ruta de inicio ver todas las tareas
     router.get("/task").handler(this::getAllTasks);
-    router.post("/task/:taskId").handler(this::processTaskById);
-    router.get("/task/status/:taskId").handler(this::getTaskStatus);
+   /*  router.post("/task/:taskId").handler(this::processTaskById);
+    router.get("/task/status/:taskId").handler(this::getTaskStatus); */
 
     // Inicializar servidor HTTP
     vertx.createHttpServer().requestHandler(router).listen(8888).onComplete(http -> {
