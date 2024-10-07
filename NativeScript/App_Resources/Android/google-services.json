@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "824598620000",
+    "project_id": "appmovil-c76f0",
+    "storage_bucket": "appmovil-c76f0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:824598620000:android:d4b780c2ee17921395e005",
+        "android_client_info": {
+          "package_name": "org.nativescript.application"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNS5lbTr86T59WfBM0vji0gDpobwb9DdE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
