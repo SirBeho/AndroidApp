@@ -1,5 +1,8 @@
 package com.example.vertex;
 
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -11,82 +14,98 @@ public class TaskManager {
 
     private final Map<String, TaskProgress> tasks = new ConcurrentHashMap<>();
     private final WebClient webClient;
+    private DBUtils dbUtils;
 
     // Constructor que acepta una instancia de Vertx para inicializar WebClient
-    public TaskManager(Vertx vertx) {
+    public TaskManager(Vertx vertx, DBUtils dbUtils) {
         this.webClient = WebClient.create(vertx);
+        this.dbUtils = dbUtils;
     }
 
     public void startTask(String taskId) {
+        
         if (tasks.containsKey(taskId)) {
             System.out.println("Task " + taskId + " is already being processed.");
             return;
         }
 
-        TaskProgress taskProgress = new TaskProgress("inprogress", 0);
+        
+        int incremento = (int) (Math.random() * 10) + 1;
+
+
+        TaskProgress taskProgress = new TaskProgress("inprogress", 0, new Date(), null);
         tasks.put(taskId, taskProgress);
 
-        long timerId = Vertx.currentContext().owner().setPeriodic(1000, id -> {
-            taskProgress.progress += 10;
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+
+        long timerId = Vertx.currentContext().owner().setPeriodic(500, id -> {
+            
+             System.out.print("\033[H");
+            System.out.flush();
+     
+            for (Map.Entry<String, TaskProgress> entry : tasks.entrySet()) {
+                String codigo = entry.getKey();
+                TaskProgress progress = entry.getValue();
+                Duration duration = Duration.between(progress.startTime.toInstant(), Instant.now());
+                
+                if (progress.progress >= 100) {
+                    progress.progress = 100;
+                }
+    
+                System.out.println("Tarea [" + codigo + "] [" +
+                    "*".repeat(progress.progress / 5) + " ".repeat(20 - (progress.progress / 5)) + "] " +
+                    progress.progress + "%" + " [" + duration.getSeconds() + " seg]" );
+            }
+          
 
             if (taskProgress.progress >= 100) {
+               
                 Vertx.currentContext().owner().cancelTimer(id);
                 taskProgress.status = "completed";
                 taskProgress.progress = 100;
-                System.out.println("Task " + taskId + " completed.");
+                taskProgress.endTime = new Date();
+               
+                tasks.remove(taskId);
+                
+                PdfReportGenerator.generatePdf(dbUtils,taskId,taskProgress);
+                
+                System.out.print("\033[H\033[2J");
+                System.out.flush();
 
-                // Enviar notificación push al completar la tarea
+               
                 sendPushNotification(taskId, "Task Completed", "Task " + taskId + " has been completed.");
             }
-
-            System.out.println("Task " + taskId + " progress: " + taskProgress.progress + "%");
+           
+            taskProgress.progress += incremento;
         });
-    }
-
-    private void sendPushNotification(String taskId, String title, String message) {
-        JsonObject notification = new JsonObject()
-                .put("title", title)
-                .put("body", message);
-
-        JsonObject data = new JsonObject()
-                .put("taskId", taskId);
-
-        JsonObject payload = new JsonObject()
-                .put("to", "/topics/tasks")  // Enviar a un tema o un token específico
-                .put("notification", notification)
-                .put("data", data);
-
-        webClient.post(443, "fcm.googleapis.com", "/fcm/send")
-                .putHeader("Authorization", "key=YOUR_SERVER_KEY")
-                .putHeader("Content-Type", "application/json")
-                .ssl(true)
-                .sendJsonObject(payload, ar -> {
-                    if (ar.succeeded()) {
-                        System.out.println("Push notification sent: " + ar.result().bodyAsString());
-                    } else {
-                        System.err.println("Failed to send push notification: " + ar.cause().getMessage());
-                    }
-                });
     }
 
     public JsonObject getTaskStatus(String taskId) {
         if (tasks.containsKey(taskId)) {
             TaskProgress taskProgress = tasks.get(taskId);
+            //todos los atributos de la clase
             return new JsonObject()
                     .put("status", taskProgress.status)
-                    .put("progress", taskProgress.progress);
+                    .put("progress", taskProgress.progress)
+                    .put("startTime", taskProgress.startTime)
+                    .put("endTime", taskProgress.endTime);
         } else {
-            return new JsonObject().put("error", "Task not found");
+            return new JsonObject().put("error", "Tarea {" + taskId + "} no se esta procesando.");
         }
     }
 
-    private static class TaskProgress {
+    public static class TaskProgress {
         String status;
         int progress;
+        Date startTime;
+        Date endTime;
 
-        TaskProgress(String status, int progress) {
+        TaskProgress(String status, int progress, Date startTime, Date endTime) {
             this.status = status;
             this.progress = progress;
+            this.startTime = startTime;
+            this.endTime = endTime;
         }
     }
 }

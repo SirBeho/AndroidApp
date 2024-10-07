@@ -32,3 +32,27 @@ INSERT INTO tasks (title, description, status, created, project_id, user_id) VAL
 ('Tarea 3 Gamma', 'Descripción de la Tarea 3 de Gamma', 'in_progress', '2024-10-20', 3, 3),
 ('Tarea 4 Gamma', 'Descripción de la Tarea 4 de Gamma', 'completed', '2024-10-25', 3, 3),
 ('Tarea 5 Gamma', 'Descripción de la Tarea 5 de Gamma', 'pending', '2024-10-30', 3, 3);
+
+CREATE VIEW task_details AS
+SELECT 
+    t.id AS task_id,
+    t.title AS task_title,
+    t.description AS task_description,
+    t.status AS task_status,
+    t.created AS task_created,
+    u.name AS user_name,
+    u.username AS user_username,
+    u.email AS user_email,
+    p.name AS project_name,
+    p.description AS project_description,
+    pu.name AS project_user_name,
+    pu.username AS project_user_username,
+    pu.email AS project_user_email
+FROM 
+    tasks t
+JOIN 
+    users u ON t.user_id = u.id 
+JOIN 
+    projects p ON t.project_id = p.id 
+JOIN 
+    users pu ON p.user_id = pu.id;

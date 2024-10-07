@@ -35,6 +35,13 @@
     </dependencies>
   </dependencyManagement>
 
+<repositories>
+        <repository>
+            <id>itext</id>
+            <url>https://repo.itextsupport.com/releases</url>
+        </repository>
+    </repositories>
+
   <dependencies>
     <dependency>
       <groupId>io.vertx</groupId>
@@ -93,6 +100,16 @@
         <artifactId>vertx-jdbc-client</artifactId>
         <version>4.4.5</version>
     </dependency>
+    <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>kernel</artifactId>
+            <version>7.2.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>layout</artifactId>
+            <version>7.2.3</version>
+        </dependency>
   
     <dependency>
         <groupId>mysql</groupId>
@@ -109,6 +126,12 @@
       <artifactId>jackson-datatype-jsr310</artifactId>
       <version>2.15.0</version> <!-- Ajusta la versión según sea necesario -->
     </dependency>
+
+    <dependency>
+      <groupId>com.google.firebase</groupId>
+      <artifactId>firebase-admin</artifactId>
+      <version>9.0.0</version>
+  </dependency>
   </dependencies>
 
   <build>
