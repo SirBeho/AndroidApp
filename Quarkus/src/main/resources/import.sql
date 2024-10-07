@@ -1,9 +1,9 @@
 
 -- Insertar 3 usuarios
 INSERT INTO users (name, username, password, email) VALUES
-('John Doe','john_doe', 'password123', 'john@example.com'),
-('Jane Smith','jane_smith', 'securePass456', 'jane@example.com'),
-('Alice Jones','alice_jones', 'alicePass789', 'alice@example.com');
+('John Doe','john_doe', 'admin', 'john@example.com'),
+('Jane Smith','jane_smith', 'admin', 'jane@example.com'),
+('Alice Jones','alice_jones', 'admin', 'alice@example.com');
 
 
 -- Insertar 3 proyectos
