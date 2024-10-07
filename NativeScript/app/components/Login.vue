@@ -35,13 +35,14 @@
 
 <script>
 
-import * as applicationSettings from '@nativescript/core/application-settings';
-import Home from './Home';
+/* import * as applicationSettings from '@nativescript/core/application-settings';*/
+ import Home from './Home';
+import Login from './Login';
 
 export default {
   data() {
     return {
-      username: 'jhon',
+      username: 'john_doe',
       password: 'admin',
       errorMessage: ''
     };
@@ -51,7 +52,7 @@ export default {
       i
       if (this.username && this.password) {
         try {
-            const response = await fetch('http://10.0.2.2:8080/login', {
+          const response = await fetch('http://10.0.2.2:8080/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -65,11 +66,16 @@ export default {
 
           if (response.ok) {
             const userData = await response.json();
-            applicationSettings.setString("loggedInUser", JSON.stringify(userData));
+           // applicationSettings.setString("loggedInUser", JSON.stringify(userData));
 
             this.errorMessage = '';
-            this.$navigateTo(Home); 
+           
+
             console.log('Usuario autenticado:', userData);
+            this.$navigateTo(Login, { transition: { name: 'slide' } });
+
+
+          
           } else if (response.status === 401) {
             console.log('Credenciales incorrectas');
             this.errorMessage = 'Credenciales incorrectas. Intenta de nuevo.';
@@ -84,9 +90,9 @@ export default {
       } else {
         alert('Por favor, complete ambos campos.');
       }
-   
 
-  }
+
+    }
   }
 };
 </script>
@@ -105,7 +111,7 @@ export default {
 
 /* Estilos para el contenedor del formulario */
 .login-container {
-  padding: 30px;
+  padding: 500px 100px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,7 +129,7 @@ export default {
 .title {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 30px;
+  margin-bottom: 80px;
   color: #333;
 }
 

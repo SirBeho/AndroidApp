@@ -17,7 +17,7 @@
 
 <script>
 // Importa las páginas como en el ejemplo anterior
-
+import * as https from 'nativescript-https';
 import MyTasks from './MyTasks.vue';
 import Users from './Users.vue';
 
