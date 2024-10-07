@@ -119,6 +119,7 @@ export default {
         }
     }   
 };
+
 </script>
 
 <style scoped>
@@ -174,3 +175,5 @@ export default {
     font-size: 16px;
 }
 </style>
+
+

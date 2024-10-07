@@ -123,18 +123,22 @@ export default {
                     method: 'delete',
                     headers: {
                         'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(this.user)
+                    }
+                   
                 });
 
 
                 if (response.ok) {
                     this.user = await response.json();
+                    console.log('Usuario eliminado:', this.user);
                     alert('Usuario eliminado correctamente');
-                    this.$modal.close(-1);
-                } else {
+                    this.$modal.close(this.user);
+                } else if (response.status === 404){
+                    alert(`Este usuario no existe`);
 
-                    const errorMessage = response.text() || 'Error desconocido';
+                }else {
+
+                    const errorMessage = await response.text() || 'Error desconocido';
                     alert(`Error al eliminar el usuario: ${errorMessage}`);
                 }
             } catch (error) {

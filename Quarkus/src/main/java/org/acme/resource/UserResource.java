@@ -83,7 +83,7 @@ public class UserResource {
         }
 
         userRepository.delete(user);
-        return Response.ok("Usuario eliminado").build();
+        return Response.ok(user).build();
     }
 
 

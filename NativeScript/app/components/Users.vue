@@ -9,7 +9,7 @@
             <Label text="Correo" row="0" col="2" class="table-header" />
             <Label text="Usuario" row="0" col="3" class="table-header" />
         </GridLayout>
-        <GridLayout v-for="(user, index) in users" :key="index" rows="auto" columns="30, 4*, 6*, 3*"
+        <GridLayout v-for="(user, index) in localUsers" :key="index" rows="auto" columns="30, 4*, 6*, 3*"
             @tap="editUser(user)" class="user-row">
             <Label :text="user.id" col="0" class="cell" />
             <Label :text="user.name" col="1" class="cell" />
@@ -18,6 +18,95 @@
         </GridLayout>
     </StackLayout>
 </template>
+
+
+
+<script>
+
+import ModalAddUser from './ModalAddUser.vue';
+import ModalEditUser from './ModalEditUser.vue';
+export default {
+    data() {
+        return {
+            localUsers: [] // Variable local para almacenar usuarios
+        };
+    },
+    computed: {
+        
+        users() {
+            console.log('Accediendo a users desde el store:', this.$store.getState());
+
+            return this.$store.getState().users|| [];;
+        }
+    },
+    async mounted() {
+        this.fetchUsers();
+        //await this.$store.dispatch(fetchUsers);
+    },
+    methods: {
+        async fetchUsers() {
+            console.log('Obtener usuarios');
+            try {
+                const response = await fetch('http://10.0.2.2:8080/users');
+                const data = await response.json();
+                
+                this.$store.dispatch({
+                    type: 'SET_USERS',
+                    payload: data
+                });
+                this.localUsers = data;
+                console.log('Users:', this.users);
+            } catch (error) {
+                console.error('Error fetching users', error);
+            }
+        },
+        async addUser() {
+            console.log('Agregar usuario');
+            try {
+
+                const result = await this.$showModal(ModalAddUser, {
+                    fullscreen: false,
+                    width: 100,
+                    height: 60,
+                    context: {}
+                });
+                if (result) {
+                    this.$store.dispatch({
+                        type: 'ADD_USER',
+                        payload: result
+                    });
+                    this.fetchUsers();
+                }
+            } catch (error) {
+                console.error('Error abriendo modal:', error);
+            }
+        },
+        async editUser(usuario) {
+            console.log('Editar usuario:', usuario);
+            try {
+                const result = await this.$showModal(ModalEditUser, {
+                    fullscreen: false,
+                    width: 100,
+                    height: 60,
+                    props: {
+                        user: usuario // Pasa el usuario como prop
+                    }
+                });
+                console.log('Resultado:', result);
+                if (result) {
+                    this.$store.dispatch({
+                        type: 'UPDATE_USER',
+                        payload: result
+                    });
+                   this.fetchUsers();
+                }
+            } catch (error) {
+                console.error('Error abriendo modal:', error);
+            }
+        }
+    }
+};
+</script>
 
 <style scoped>
 /* Contenedor de la tabla */
@@ -86,73 +175,3 @@
     background-color: #ee0909;
 }
 </style>
-
-
-<script>
-
-import ModalAddUser from './ModalAddUser.vue';
-import ModalEditUser from './ModalEditUser.vue';
-export default {
-    data() {
-        return {
-            users: []
-        };
-    },
-    async mounted() {
-        this.fetchUsers();
-    },
-    methods: {
-        async fetchUsers() {
-            console.log('Obtener usuarios');
-            try {
-                const response = await fetch('http://10.0.2.2:8080/users');
-                const data = await response.json();
-                this.users = data;
-                console.log('Users:', this.users);
-            } catch (error) {
-                console.error('Error fetching users', error);
-            }
-        },
-        async addUser() {
-            console.log('Agregar usuario');
-            try {
-
-                const result = await this.$showModal(ModalAddUser, {
-                    fullscreen: false,
-                    width: 100,
-                    height: 60,
-                    context: {}
-                });
-                if (result) {
-                    // Si el usuario agregó datos, los añadimos a la lista
-                    this.users.push(result);
-                }
-            } catch (error) {
-                console.error('Error abriendo modal:', error);
-            }
-        },
-        async editUser(usuario) {
-            console.log('Editar usuario:', usuario);
-            try {
-                const result = await this.$showModal(ModalEditUser, {
-                    fullscreen: false,
-                    width: 100,
-                    height: 60,
-                    props: {
-                        user: usuario // Pasa el usuario como prop
-                    }
-                });
-                console.log('Resultado:', result);
-                if (result) {
-                    // Si el usuario editó datos, los actualizamos en la lista
-                    const index = this.users.findIndex(u => u.id === result.id);
-                    this.users[index] = result;
-                }
-            } catch (error) {
-                console.error('Error abriendo modal:', error);
-            }
-        }
-
-    }
-};
-</script>
