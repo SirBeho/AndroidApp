@@ -25,7 +25,8 @@ public class MainVerticle extends AbstractVerticle {
 
     ObjectMapper mapper = DatabindCodec.mapper();
     ObjectMapper prettyMapper = DatabindCodec.prettyMapper();
-    ;
+    vertx.deployVerticle(new WebSocketServer());
+    
 
     mapper.registerModule(new JavaTimeModule());
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -35,6 +36,11 @@ public class MainVerticle extends AbstractVerticle {
     dbUtils = new DBUtils(vertx);
     taskManager = new TaskManager(vertx,dbUtils);
     Router router = Router.router(vertx);
+
+    //ruta hoa desde vertx
+    router.get("/hello").handler(ctx -> {
+      ctx.response().end("Hello from Vert.x API!");
+    });
 
     // ruta de inicio ver todas las tareas
     router.get("/task").handler(this::getAllTasks);
@@ -51,7 +57,6 @@ public class MainVerticle extends AbstractVerticle {
         startPromise.fail(http.cause());
       }
     });
-
   }
 
   private void getAllTasks(RoutingContext context) {
@@ -141,3 +146,4 @@ public class MainVerticle extends AbstractVerticle {
   }
 
 }
+ 

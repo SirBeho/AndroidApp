@@ -1,11 +1,27 @@
-# Utiliza la imagen oficial de OpenJDK como base
-FROM openjdk:17-jdk-slim
+# Usar la imagen oficial de Maven para compilar la aplicación
+FROM maven:3.8.6-openjdk-17 AS build-stage
 
-# Crea un directorio para la aplicación
+# Establecer el directorio de trabajo
 WORKDIR /app
 
-COPY target/vertex-1.0.0-SNAPSHOT-fat.jar /app/mi-vertx-app.jar
+# Copiar el archivo pom.xml y el directorio src al contenedor
+COPY pom.xml .
+COPY src ./src
 
-EXPOSE 8888
+# Compilar el proyecto usando Maven
+RUN mvn clean package
 
-CMD ["java", "-jar", "/app/mi-vertx-app.jar"]
+# Usar la imagen oficial de OpenJDK para ejecutar la aplicación
+FROM openjdk:17-jdk-slim
+
+# Establecer el directorio de trabajo
+WORKDIR /app
+
+# Copiar el archivo JAR desde la etapa de compilación
+COPY --from=build-stage /app/target/*.jar app.jar
+
+# Exponer el puerto en el que la API estará disponible
+EXPOSE 8080
+
+# Comando para ejecutar la aplicación
+CMD ["java", "-jar", "app.jar"]

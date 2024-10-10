@@ -1,0 +1,18 @@
+{
+    "name": "vertx-api",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+      "dev": "mvnw clean compile exec:java",
+      "build": "mvnw clean package",
+      "test": "mvnw test",
+      "clean": "mvnw clean",
+      "start": "java -jar target/vertx-api-1.0.0-fat.jar",
+      "docker-build": "docker build -t vertx-api .",
+      "docker-run": "docker run -i --rm -p 8081:8081 vertx-api",
+      "rebuild": "npm run clean && npm run build && npm run start"
+    },
+    "dependencies": {},
+    "devDependencies": {}
+  }
+  

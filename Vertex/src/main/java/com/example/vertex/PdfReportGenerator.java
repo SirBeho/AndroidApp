@@ -165,8 +165,8 @@ public class PdfReportGenerator {
             
                         // Cerrar el documento
                         document.close();
-            
-                        System.out.println("Reporte PDF generado exitosamente en: " + currentDirectory);
+                       
+                       //System.out.println("Reporte PDF generado exitosamente");
                     }                    catch (FileNotFoundException e) {
                         e.printStackTrace();
                     }
@@ -183,7 +183,7 @@ public class PdfReportGenerator {
     }
 
     public static void main(String[] args) {
-        generatePdf(new DBUtils(null), "1", new TaskProgress("inprogress", 0, null, null));
+        generatePdf(new DBUtils(null), "1", new TaskProgress("inprogress", 0, null, null, ""));
     }
 
 }
