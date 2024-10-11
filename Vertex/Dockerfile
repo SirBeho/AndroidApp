@@ -1,11 +1,21 @@
-# Utiliza la imagen oficial de OpenJDK como base
-FROM openjdk:17-jdk-slim
-
-# Crea un directorio para la aplicación
+FROM maven:3.8.4-eclipse-temurin-17 AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
 
-COPY target/vertex-1.0.0-SNAPSHOT-fat.jar /app/mi-vertx-app.jar
+FROM eclipse-temurin:17-jre
+WORKDIR /app
+RUN mkdir -p /app/archivos
+COPY --from=build /app/target/vertex-app-1.0-SNAPSHOT.jar /app/vertex-app.jar
+
 
 EXPOSE 8888
 
-CMD ["java", "-jar", "/app/mi-vertx-app.jar"]
+CMD ["java", "-jar", "vertex-app.jar"]
+
+
+
+#docker build -t vertx-api .
+
+#docker run -d -p 8888:8888 --name vertx-api-container vertx-api
+

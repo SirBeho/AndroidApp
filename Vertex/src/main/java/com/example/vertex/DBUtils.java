@@ -24,26 +24,29 @@ public class DBUtils {
         client.getConnection(ar -> {
             if (ar.succeeded()) {
                 SQLConnection connection = ar.result();
-                connection.queryWithParams(query, params, res -> {
-                    if (res.succeeded()) {
-                        ResultSet resultSet = res.result();
-                        List<JsonObject> rows = resultSet.getRows();
-
-                        // Convertimos las filas a un JSON Array
-                        JsonArray jsonArray = new JsonArray(rows);
-
-                        // Llamamos al callback con el resultado
-                        callback.onSuccess(jsonArray);
-
-                    } else {
-                        callback.onError(res.cause());
-                    }
-                    connection.close();
-                });
+                if (query.trim().toLowerCase().startsWith("select")) {
+                    connection.queryWithParams(query, params, res -> {
+                        if (res.succeeded()) {
+                            callback.onSuccess(new JsonArray(res.result().getRows()));
+                        } else {
+                            callback.onError(res.cause());
+                        } 
+                        connection.close();
+                    });
+                } else {
+                    connection.updateWithParams(query, params, res -> {
+                        if (res.succeeded()) {
+                            callback.onSuccess(new JsonArray().add(res.result().getUpdated()));
+                        } else {
+                            callback.onError(res.cause());
+                        }
+                        connection.close();
+                    });
+                }
             } else {
                 callback.onError(ar.cause());
             }
-        });
+        });            
     }
     
     public interface QueryCallback {

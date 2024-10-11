@@ -1,6 +1,6 @@
 <template>
     <Page>
-        <ActionBar title="Mi Aplicación" class="action-bar" />
+        <ActionBar title="Task Generator" class="action-bar" />
         <TabView @selectedIndexChange="onTabChange" androidTabsPosition="bottom">
 
             <TabViewItem title="Usuarios" iconSource="~/assets/icon/user.png">
@@ -8,7 +8,7 @@
             </TabViewItem>
 
             <TabViewItem title="Mis Tareas" iconSource="~/assets/icon/list.png">
-                <MyTasks ref="myTasksTab" />
+                <Tasks ref="myTasksTab" />
             </TabViewItem>
 
         </TabView>
@@ -17,14 +17,13 @@
 
 <script>
 // Importa las páginas como en el ejemplo anterior
-
-import MyTasks from './MyTasks.vue';
+import Tasks from './Tasks.vue';
 import Users from './Users.vue';
 
 export default {
     components: {
 
-        MyTasks,
+        Tasks,
         Users
     },
     methods: {
@@ -34,7 +33,7 @@ export default {
 
             // Si seleccionamos la pestaña de "Mis Tareas" (índice 0)
             if (selectedIndex === 0) {
-                // Llama la función fetchTasks dentro de MyTasks
+                // Llama la función fetchTasks dentro de Tasks
                 this.$refs.myUsersTab.fetchUsers();
             }else if (selectedIndex === 1) {
                 // Llama la función fetchUsers dentro de Users

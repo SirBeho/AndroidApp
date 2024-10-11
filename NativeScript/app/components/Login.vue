@@ -3,7 +3,9 @@
     <ActionBar title="Login" class="action-bar" />
     <StackLayout class="login-container">
       <!-- Título -->
+      <Label :text="`${this.$config.QuarkusUrl}/login`" font-size="8" />
       <Label text="Inicia sesión" class="title" />
+      
 
       <!-- Contenedor del campo de usuario con icono -->
       <FlexboxLayout class="input-container">
@@ -35,23 +37,23 @@
 
 <script>
 
-import * as applicationSettings from '@nativescript/core/application-settings';
-import Home from './Home';
+/* import * as applicationSettings from '@nativescript/core/application-settings';*/
+ import Home from './Home';
+
 
 export default {
   data() {
     return {
-      username: 'jhon',
+      username: 'john_doe',
       password: 'admin',
       errorMessage: ''
     };
   },
   methods: {
     async login() {
-      i
       if (this.username && this.password) {
         try {
-            const response = await fetch('http://10.0.2.2:8080/login', {
+          const response = await fetch(this.$config.QuarkusUrl+'/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -61,21 +63,25 @@ export default {
               password: this.password
             })
           });
-          console.log('la solicitud:', response);
+          
 
           if (response.ok) {
             const userData = await response.json();
-            applicationSettings.setString("loggedInUser", JSON.stringify(userData));
+           // applicationSettings.setString("loggedInUser", JSON.stringify(userData));
 
             this.errorMessage = '';
-            this.$navigateTo(Home); 
+           
+
             console.log('Usuario autenticado:', userData);
+            this.$navigateTo(Home, { transition: { name: 'slide' } });
+
           } else if (response.status === 401) {
             console.log('Credenciales incorrectas');
             this.errorMessage = 'Credenciales incorrectas. Intenta de nuevo.';
           } else {
             const errorText = await response.text();
             this.errorMessage = `Error: ${errorText}`;
+            console.error('Error en la solicitud:', errorText);
           }
         } catch (error) {
           console.error('Error en la solicitud:', error);
@@ -84,9 +90,9 @@ export default {
       } else {
         alert('Por favor, complete ambos campos.');
       }
-   
 
-  }
+
+    }
   }
 };
 </script>
@@ -105,7 +111,7 @@ export default {
 
 /* Estilos para el contenedor del formulario */
 .login-container {
-  padding: 30px;
+  padding: 55% 30%;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -123,7 +129,7 @@ export default {
 .title {
   font-size: 24px;
   font-weight: bold;
-  margin-bottom: 30px;
+  margin-bottom: 80px;
   color: #333;
 }
 

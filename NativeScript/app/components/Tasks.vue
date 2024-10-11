@@ -1,21 +1,21 @@
 <template>
     <StackLayout class="task-container">
-       
-        <Button text="+ Agregar" @tap="addTask" class="btn-add" width="auto" />
+        <FlexboxLayout justifyContent="space-between" width="100%">
+            <Label :text="message" class="message-label" />
+            <Button text="+ Agregar" @tap="addTask" class="btn-add" width="auto" />
+        </FlexboxLayout>
 
-        <ListView v-if="tasks.length > 0" for="task in tasks" class="list-view">
+        <ListView v-if="tasks.length > 0" :items="tasks" class="list-view" @itemTap="onItemTap">
             <v-template>
                 <StackLayout>
-                    <StackLayout class="task-card" :class="task.status">
-                        <Label :text="'Título: ' + task.title" class="task-title" />
-                        <Label :text="'Descripción: ' + task.description" class="task-description" />
-
-                        <Label :text="'Proyecto: ' + task.project.name" class="task-project" />
+                    <StackLayout class="task-card" :class="item.status">
+                        <Label :text="'Título: ' + item.title" class="task-title" />
+                        <Label :text="'Descripción: ' + item.description" class="task-description" />
+                        <Label :text="'Proyecto: ' + item.project.name" class="task-project" />
                         <FlexboxLayout justifyContent="space-between" width="100%">
-                            <Label :text="'Fecha de Creación: ' + formatDate(task.created)" class="task-date" />
-                            <Label :text="'Estado: ' + Estados(task.status)" class="task-status" />
+                            <Label :text="'Fecha de Creación: ' + formatDate(item.created)" class="task-date" />
+                            <Label :text="'Estado: ' + Estados(item.status)" class="task-status" />
                         </FlexboxLayout>
-
                     </StackLayout>
                 </StackLayout>
             </v-template>
@@ -29,25 +29,36 @@
 <script>
 
 import ModalAddTask from './ModalAddTask.vue';
+import ModalEditTask from './ModalEditTask.vue';
+import WebSocket from '@master.technology/websockets';
 
 export default {
     data() {
         return {
-            user: {}, // Almacenamos la información del usuario aquí
-            tasks: [] // Almacenamos las tareas aquí
+            user: {}, // Almacenamos la información del terea aquí
+            tasks: [], // Almacenamos las tareas aquí
+            message: "Esperando actualizaciones...",
+            ws: null,
         };
     },
-    /* created() {
-        const storedUser = applicationSettings.getString("loggedInUser");
-        this.user = storedUser ? JSON.parse(storedUser) : null;
+    created() {
 
-        if (!this.user) {
-            console.log('Usuario no autenticado, back to login');
-            this.$navigateTo(Login);
+        /*  const storedUser = applicationSettings.getString("loggedInUser");
+         this.user = storedUser ? JSON.parse(storedUser) : null;
+ 
+         if (!this.user) {
+             console.log('Usuario no autenticado, back to login');
+             this.$navigateTo(Login);
+         } */
+    },
+    beforeDestroy() {
+        if (this.ws) {
+            this.ws.close();
         }
-    }, */
-    async mounted() {
+    },
+    mounted() {
         this.fetchTasks(); // Llama a fetchTasks al montar el componente
+        this.connectToWebSocket();
     },
     methods: {
         formatDate(date) {
@@ -66,7 +77,7 @@ export default {
                     context: {}
                 });
                 if (result) {
-                    // Si el usuario agregó datos, los añadimos a la lista
+                    // Si el terea agregó datos, los añadimos a la lista
                     this.tasks.push(result);
                 }
             } catch (error) {
@@ -86,8 +97,8 @@ export default {
             console.log('Obteniendo tareas');
             try {
 
-                /* const response = await fetch('http://10.0.2.2:8080/tasks/user/' + this.user.id, { */
-                const response = await fetch('http://10.0.2.2:8080/tasks/user/' + 2, {
+                /* const response = await fetch(this.$config.QuarkusUrl+'/tasks/user/' + this.user.id, { */
+                const response = await fetch(this.$config.QuarkusUrl + '/tasks/user/' + 1, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -102,9 +113,74 @@ export default {
             } catch (error) {
                 console.error('Error en la solicitud:', error);
             }
+        },
+        onItemTap(event) {
+            const tappedTask = this.tasks[event.index];
+            this.editTask(tappedTask);
+        },
+        async editTask(tarea) {
+            console.log('Editar tarea:', tarea);
+            try {
+                const result = await this.$showModal(ModalEditTask, {
+                    fullscreen: false,
+                    width: 100,
+                    height: 60,
+                    props: {
+                        task: tarea // Pasa el terea como prop
+                    }
+                });
+                console.log('Resultado:', result);
+                if (result) {
+
+                    this.fetchTasks();
+                }
+            } catch (error) {
+                console.error('Error abriendo modal:', error);
+            }
+        },
+        async connectToWebSocket() {
+            console.log("Conectando al WebSocket...");
+            try {
+
+                const response = await new WebSocket(this.$config.WebSocketUrl);
+                if (response.ok) {
+                    this.ws = response;
+
+                    this.ws.onopen = () => {
+                        console.log("**********Conectado al WebSocket***********");
+                        this.sendMessage("Hola, servidor!");
+                    };
+
+                    this.ws.onmessage = (event) => {
+                        console.log("Mensaje recibido:", event.data);
+                        this.message = event.data;
+                    };
+
+                    this.ws.onclose = () => {
+                        console.log("WebSocket cerrado. Reintentando...");
+                        setTimeout(() => {
+                            this.connectToWebSocket();
+                        }, 5000); // Reintentar conexión en 5 segundos
+                    };
+
+                    this.ws.onerror = (error) => {
+                        console.error("Error en WebSocket:", error);
+                    };
+
+                } else {
+                    console.error('Error WebSocket', response);
+                }
+
+
+
+            } catch (error) {
+                console.error('Error en la conexión WebSocket:', error);
+            }
         }
     }
+
 };
+
 </script>
 
 <style scoped>
@@ -223,5 +299,4 @@ body {
 .btn-add:hover {
     background-color: #ee0909;
 }
-
 </style>
