@@ -1,5 +1,8 @@
-# Proyecto Completo
-![Vertex Project](https://skillicons.dev/icons?i=docker,java,vuejs,mysql,quarkus,vertx,nativescript)
+# Proyecto Task Manager
+### <span style="display: inline-flex; align-items: center;gap:7px"><img src="https://simpleskill.icons.workers.dev/svg?i=vue.js" height="29" width="29" style="border-radius: 20%; border:solid 4px #42b883;padding:3px;padding-bottom:1px"> <img src="https://simpleskill.icons.workers.dev/svg?i=quarkus,eclipsevertdotx,nativescript" height="40"> <img src="https://simpleskill.icons.workers.dev/svg?i=mysql" height="35" style="border-radius: 20%; background-color: lightgray;padding:2px;">  <img src="https://skillicons.dev/icons?i=docker,firebase" height="40">   <img src="https://avatars.githubusercontent.com/u/130129149?v=4" height="38" style="border-radius: 20%" ></span>
+  </span>
+
+
 
 ## Descripción del Proyecto
 
@@ -81,12 +84,13 @@ El proyecto consta de cuatro componentes principales:
 
 
 - **<span style="display: inline-flex; align-items: center;gap:10px">
- <img src="https://simpleskill.icons.workers.dev/svg?i=firebase" height="30"> Firebase Cloud Messaging (FCM)** </span>
+ <img src="https://skillicons.dev/icons?i=firebase" height="30"> Firebase Cloud Messaging (FCM)** </span>
 
   - Utilizado para enviar notificaciones push a la aplicación móvil cuando las tareas son completadas.
 
 - **<span style="display: inline-flex; align-items: center;gap:10px">
- <img src="https://raw.githubusercontent.com/Marfusios/websocket-client/master/websocket-logo.png" height="27"> WebSockets** </span>
+ <img src="https://avatars.githubusercontent.com/u/130129149?v=4" height="30" style="border-radius: 20%" >
+ WebSockets** </span>
   - Proporcionan una comunicación bidireccional y en tiempo real entre el backend y el cliente, para las actualizaciones del estado de las tareas.
 
 - **<span style="display: inline-flex; align-items: center;gap:10px">
