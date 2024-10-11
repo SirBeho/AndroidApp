@@ -78,7 +78,7 @@ export default {
             }
 
             try {
-                const response = await fetch('http://10.0.2.2:8080/users', {
+                const response = await fetch(this.$config.QuarkusUrl+'/users', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

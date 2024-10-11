@@ -95,6 +95,22 @@ public class TaskResource {
          */
     }
 
+
+    @DELETE
+    @Path("/{id}")
+    @Transactional
+    public Response deleteTask(@PathParam("id") Long id) {
+
+        Task task = taskRepository.findById(id);
+        if (task == null) {
+            return Response.status(Response.Status.NOT_FOUND).entity("Tarea no existe").build();
+        }
+
+        taskRepository.delete(task);
+        return Response.ok(task).build();
+    }
+
+
     @GET
     @Path("/user/{id}")
     public List<Task> getTasksByUserId(@PathParam("id") Long id) {
@@ -109,13 +125,5 @@ public class TaskResource {
         return taskRepository.findByStatus(status);
     }
 
-    @DELETE
-    @Path("/{id}")
-    public Response deleteTask(@PathParam("id") Long id) {
-        boolean deleted = taskRepository.deleteById(id);
-        if (!deleted) {
-            throw new NotFoundException("Task not found");
-        }
-        return Response.noContent().build();
-    }
+    
 }

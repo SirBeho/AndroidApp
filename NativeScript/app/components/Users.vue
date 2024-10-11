@@ -25,6 +25,7 @@
 
 import ModalAddUser from './ModalAddUser.vue';
 import ModalEditUser from './ModalEditUser.vue';
+
 export default {
     data() {
         return {
@@ -33,29 +34,22 @@ export default {
     },
     computed: {
         
-        users() {
-            console.log('Accediendo a users desde el store:', this.$store.getState());
-
-            return this.$store.getState().users|| [];;
-        }
+        
     },
     async mounted() {
         this.fetchUsers();
-        //await this.$store.dispatch(fetchUsers);
+       
     },
     methods: {
         async fetchUsers() {
             console.log('Obtener usuarios');
             try {
-                const response = await fetch('http://10.0.2.2:8080/users');
+                const response = await fetch(this.$config.QuarkusUrl+'/users');
                 const data = await response.json();
                 
-                this.$store.dispatch({
-                    type: 'SET_USERS',
-                    payload: data
-                });
+                
                 this.localUsers = data;
-                console.log('Users:', this.users);
+                //console.log('Users:', this.users);
             } catch (error) {
                 console.error('Error fetching users', error);
             }
@@ -71,10 +65,7 @@ export default {
                     context: {}
                 });
                 if (result) {
-                    this.$store.dispatch({
-                        type: 'ADD_USER',
-                        payload: result
-                    });
+                    
                     this.fetchUsers();
                 }
             } catch (error) {
@@ -94,10 +85,7 @@ export default {
                 });
                 console.log('Resultado:', result);
                 if (result) {
-                    this.$store.dispatch({
-                        type: 'UPDATE_USER',
-                        payload: result
-                    });
+                   
                    this.fetchUsers();
                 }
             } catch (error) {

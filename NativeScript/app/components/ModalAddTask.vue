@@ -48,7 +48,7 @@ export default {
         async fetchUsers() {
             console.log('Obtener usuarios');
             try {
-                const response = await fetch('http://10.0.2.2:8080/users');
+                const response = await fetch(this.$config.QuarkusUrl+'/users');
                 const data = await response.json();
                 this.tasks = data;
                 console.log('Users:', this.tasks);
@@ -75,7 +75,7 @@ export default {
             }
 
             try {
-                const response = await fetch('http://10.0.2.2:8080/tasks', {
+                const response = await fetch(this.$config.QuarkusUrl+'/tasks', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'

@@ -1,0 +1,18 @@
+{
+    "name": "quarkus-api",
+    "version": "1.0.0",
+    "private": true,
+    "scripts": {
+        "dev": "mvnw compile quarkus:dev",
+        "build": "./mvnw clean package",
+        "test": "./mvnw test",
+        "clean": "./mvnw clean",
+        "start": "java -jar target/quarkus-app/quarkus-run.jar",
+        "docker-build": "docker build -f src/main/docker/Dockerfile.jvm -t quarkus-api .",
+        "docker-run": "docker run -i --rm -p 8080:8080 quarkus-api",
+        "rebuild": "npm run clean && npm run build && npm run start"
+    },
+    "dependencies": {
+        "quarkus-api": "file:"
+    }
+}

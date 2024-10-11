@@ -91,7 +91,7 @@ export default {
             }
 
             try {
-                const response = await fetch('http://10.0.2.2:8080/users/' + this.user.id, {
+                const response = await fetch(this.$config.QuarkusUrl+'/users/' + this.user.id, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json'
@@ -119,7 +119,7 @@ export default {
         async deleteUser() {
 
             try {
-                const response = await fetch('http://10.0.2.2:8080/users/' + this.user.id, {
+                const response = await fetch(this.$config.QuarkusUrl+'/users/' + this.user.id, {
                     method: 'delete',
                     headers: {
                         'Content-Type': 'application/json'

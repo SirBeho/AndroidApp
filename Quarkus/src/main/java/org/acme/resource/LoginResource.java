@@ -24,6 +24,8 @@ public class LoginResource {
     @POST
     public Response login(User user) {
 
+      
+
         User existingUser = userRepository.findByUsername(user.getUsername());
 
         if (existingUser != null && BCrypt.checkpw(user.getPassword(), existingUser.getPassword())) {
