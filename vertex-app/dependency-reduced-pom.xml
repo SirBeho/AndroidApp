@@ -24,7 +24,7 @@
             <manifest>
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addClasspath>true</addClasspath>
-              <mainClass>com.example.vertex.Launcher</mainClass>
+              <mainClass>com.example.vertex.MainVerticle</mainClass>
             </manifest>
           </archive>
         </configuration>
@@ -41,7 +41,7 @@
             <configuration>
               <transformers>
                 <transformer>
-                  <mainClass>com.example.vertex.Launcher</mainClass>
+                  <mainClass>com.example.vertex.MainVerticle</mainClass>
                 </transformer>
               </transformers>
             </configuration>
@@ -53,7 +53,7 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.4.1</version>
         <configuration>
-          <mainClass>com.example.vertex.Launcher</mainClass>
+          <mainClass>com.example.vertex.MainVerticle</mainClass>
         </configuration>
       </plugin>
     </plugins>

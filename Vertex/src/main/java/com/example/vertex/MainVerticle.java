@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Promise;
+import io.vertx.core.Vertx;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.core.json.JsonArray;
@@ -19,6 +20,18 @@ public class MainVerticle extends AbstractVerticle {
 
   private DBUtils dbUtils;
   private TaskManager taskManager;
+
+   public static void main(String[] args) {
+        // Crear una instancia de Vertx y desplegar el verticle principal
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(new MainVerticle(), res -> {
+            if (res.succeeded()) {
+                System.out.println("Verticle deployed successfully.");
+            } else {
+                System.out.println("Deployment failed: " + res.cause());
+            }
+        });
+    }
 
   @Override
   public void start(Promise<Void> startPromise) throws Exception {

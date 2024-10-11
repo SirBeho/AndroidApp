@@ -9,7 +9,7 @@ public class DBConfig {
 
     public static SQLClient getJDBCClient(Vertx vertx) {
         JsonObject config = new  JsonObject()
-        .put("url", "jdbc:mysql://localhost:3306/task_management")
+        .put("url", "jdbc:mysql://host.docker.internal:3306/task_management")
         .put("driver_class", "com.mysql.cj.jdbc.Driver")
         .put("user", "root")
         .put("password", "@Motor0009896")

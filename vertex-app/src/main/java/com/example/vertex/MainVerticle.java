@@ -1,11 +1,24 @@
 package com.example.vertex;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Vertx;
 import io.vertx.core.Promise;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.handler.BodyHandler;
 
 public class MainVerticle extends AbstractVerticle {
+
+    public static void main(String[] args) {
+        // Crear una instancia de Vertx y desplegar el verticle principal
+        Vertx vertx = Vertx.vertx();
+        vertx.deployVerticle(new MainVerticle(), res -> {
+            if (res.succeeded()) {
+                System.out.println("Verticle deployed successfully.");
+            } else {
+                System.out.println("Deployment failed: " + res.cause());
+            }
+        });
+    }
 
     @Override
     public void start(Promise<Void> startPromise) {
