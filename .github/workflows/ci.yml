@@ -15,18 +15,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '14'
+          node-version: '16'
 
       - name: Set up Maven
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Build Quarkus API
-        run: |
-          cd Quarkus
-          ./mvnw clean package 
 
       - name: Build Quarkus Docker image
         run: |
