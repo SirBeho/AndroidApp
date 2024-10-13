@@ -25,7 +25,7 @@ jobs:
 
       - name: Build Quarkus API
         run: |
-          cd path/to/quarkus-api-folder
+          cd Quarkus
           ./mvnw clean package 
 
       - name: Build Quarkus Docker image
