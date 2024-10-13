@@ -11,7 +11,7 @@ COPY target/quarkus-app/quarkus-run.jar ./
 # Copiar archivos de Maven
 COPY mvnw ./
 COPY .mvn/ .mvn/
-
+RUN chmod +x mvnw
 
 # Copiar archivo de configuración de Maven y descargar dependencias
 COPY pom.xml ./
