@@ -98,6 +98,6 @@ jobs:
           export ANDROID_SDK_ROOT=$ANDROID_HOME  # Forzar que ambas variables apunten al mismo lugar
           export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
           cd NativeScript
-          ns build android --no-uglify  # O usa --release si es necesario
+          ns build android --release  # O usa --no-uglify si es necesario
 
 
