@@ -55,7 +55,7 @@ jobs:
           cd Vertex
           npm run docker-run  # docker run -d -p 8888:8888 --name vertx-api vertx-api
 
-  mobile-app:
+  nativescrip-app:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -90,6 +90,6 @@ jobs:
 
       - name: Build APK
         run: |
-          cd path/to/nativescript-app-folder
+          cd NativeScript
           ns build android --release
 
