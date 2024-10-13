@@ -3,31 +3,101 @@ name: CI/CD Pipeline
 on:
   pull_request:
     branches:
-      - master  
+      - master
 
 jobs:
-  build:
+  quarkus-api:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js (si es una app Node.js)
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Set up Maven
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
 
-    - name: Run tests
-      run: npm test
+      - name: Build Quarkus Docker image
+        run: |
+          cd Quarkus
+          chmod +x mvnw
+          npm run docker-build  #docker build -t quarkus-api .
 
-    - name: Build Docker image
-      run: docker build -t myapp .
+      - name: Run Quarkus Docker container
+        run: |
+          cd Quarkus
+          npm run docker-run  #docker run -d -p 9999:9999 --name quarkus-api quarkus-api
 
-    - name: Simulate deployment
-      if: github.event.pull_request.merged == true  # Desplegar solo si el PR ha sido mergeado
-      run: |
-        echo "Simulating deployment..."
+  vertx-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Build Vert.x Docker image
+        run: |
+          cd Vertex
+          npm run docker-build  # docker build -t vertx-api .
+
+      - name: Run Vert.x Docker container
+        run: |
+          cd Vertex
+          npm run docker-run  # docker run -d -p 8888:8888 --name vertx-api vertx-api
+
+  nativescrip-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Set up Java
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Android Build Tools and SDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget tar unzip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
+          mkdir -p $HOME/android-sdk
+          unzip commandlinetools-linux-8092744_latest.zip -d $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/tools
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+        
+      - name: Ensure ANDROID_SDK_ROOT is unset
+        run: unset ANDROID_SDK_ROOT
+        
+      - name: Install NativeScript CLI
+        run: npm install -g nativescript
+
+      # Construir APK
+      - name: Build APK
+        run: |
+          export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_SDK_ROOT=$ANDROID_HOME  # Forzar que ambas variables apunten al mismo lugar
+          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+          cd NativeScript
+          ns build android --no-uglify  # O usa --release si es necesario
+
+

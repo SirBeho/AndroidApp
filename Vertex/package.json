@@ -9,7 +9,7 @@
         "clean": "mvnw clean",
         "start": "java -jar target/vertx-api-1.0.0-fat.jar",
         "docker-build": "docker build -t vertx-api .",
-        "docker-run": "docker run -i --rm -p 8081:8081 vertx-api",
+        "docker-run": "docker run -d -p 8888:8888 --name vertx-api vertx-api",
         "rebuild": "npm run clean && npm run build && npm run start"
     },
     "dependencies": {

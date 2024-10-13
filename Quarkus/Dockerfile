@@ -4,14 +4,14 @@ FROM eclipse-temurin:17-jdk AS build
 # Establecer directorio de trabajo
 WORKDIR /app
 
-COPY target/quarkus-app/lib/ ./lib/
-COPY target/quarkus-app/app/ ./app/
-COPY target/quarkus-app/quarkus/ ./quarkus/
-COPY target/quarkus-app/quarkus-run.jar ./
+# COPY target/quarkus-app/lib/ ./lib/
+# COPY target/quarkus-app/app/ ./app/
+# COPY target/quarkus-app/quarkus/ ./quarkus/
+# COPY target/quarkus-app/quarkus-run.jar ./
 # Copiar archivos de Maven
 COPY mvnw ./
 COPY .mvn/ .mvn/
-RUN chmod +x mvnw
+RUN chmod +x ./mvnw
 
 # Copiar archivo de configuración de Maven y descargar dependencias
 COPY pom.xml ./
