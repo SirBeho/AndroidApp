@@ -38,13 +38,13 @@ COPY --from=build /app/target/quarkus-app/quarkus-app-dependencies.txt ./
 
 
 # Exponer el puerto de la aplicación
-EXPOSE 8080
+EXPOSE 9999
 
 # Comando para ejecutar la aplicación
 CMD ["java", "-jar", "quarkus-run.jar"]
 
 
-#docker run -d -p 8080:8080 --name quarkus-api quarkus-api
-#docker run --name quarkus-api -p 8080:8080 -d quarkus-api java -jar /path/to/quarkus-run.jar
+#docker run -d -p 9999:9999 --name quarkus-api quarkus-api
+
 
 

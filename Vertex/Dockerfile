@@ -17,5 +17,5 @@ CMD ["java", "-jar", "vertex-app.jar"]
 
 #docker build -t vertx-api .
 
-#docker run -d -p 8888:8888 --name vertx-api-container vertx-api
+#docker run -d -p 8888:8888 --name vertx-api vertx-api
 

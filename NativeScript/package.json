@@ -6,15 +6,15 @@
   "scripts": {
     "dev": "ns run android",
     "clean": "rm -rf node_modules hooks platforms package-lock.json",
-    "install": "npm install",
-    "rebuild": "npm run clean && npm run install && ns run android",
+    "setup": "npm install",
+    "rebuild": "npm run clean && npm run setup && ns run android",
     "build:android": "ns build android"
   },
   "dependencies": {
     "@nativescript/core": "~8.8.0",
     "@nativescript/theme": "^3.1.0",
-    "nativescript-app": "file:",
-    "nativescript-vue": "^2.9.3"
+    "nativescript-https": "^2.2.2",
+    "nativescript-vue": "~2.9.3"
   },
   "devDependencies": {
     "@nativescript/android": "8.8.5",

@@ -30,7 +30,7 @@
 
 import ModalAddTask from './ModalAddTask.vue';
 import ModalEditTask from './ModalEditTask.vue';
-import WebSocket from '@master.technology/websockets';
+
 
 export default {
     data() {
@@ -58,7 +58,7 @@ export default {
     },
     mounted() {
         this.fetchTasks(); // Llama a fetchTasks al montar el componente
-        this.connectToWebSocket();
+        /* this.connectToWebSocket(); */
     },
     methods: {
         formatDate(date) {
@@ -140,7 +140,7 @@ export default {
         },
         async connectToWebSocket() {
             console.log("Conectando al WebSocket...");
-            try {
+            /* try {
 
                 const response = await new WebSocket(this.$config.WebSocketUrl);
                 if (response.ok) {
@@ -175,7 +175,7 @@ export default {
 
             } catch (error) {
                 console.error('Error en la conexión WebSocket:', error);
-            }
+            } */
         }
     }
 
