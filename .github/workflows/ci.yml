@@ -91,7 +91,7 @@ jobs:
       - name: Install NativeScript CLI
         run: npm install -g nativescript
 
-      # Construir APK
+      
       - name: Build APK
         run: |
           export ANDROID_HOME=$HOME/android-sdk
