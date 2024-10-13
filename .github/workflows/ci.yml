@@ -91,10 +91,13 @@ jobs:
       - name: Install NativeScript CLI
         run: npm install -g nativescript
 
+      # Construir APK
       - name: Build APK
         run: |
           export ANDROID_HOME=$HOME/android-sdk
+          export ANDROID_SDK_ROOT=$ANDROID_HOME  # Forzar que ambas variables apunten al mismo lugar
           export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
           cd NativeScript
-          ns build android --no-uglify #cam,biar el ugliy por --release
+          ns build android --no-uglify  # O usa --release si es necesario
+
 
