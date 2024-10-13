@@ -52,12 +52,12 @@ jobs:
       - name: Build Vert.x Docker image
         run: |
           cd Vertex
-          npm run docker-build  # Ejecuta docker build -t vertx-api .
+          npm run docker-build  # docker build -t vertx-api .
 
       - name: Run Vert.x Docker container
         run: |
           cd Vertex
-          npm run docker-run  # Ejecuta docker run -d -p 8888:8888 --name vertx-api vertx-api
+          npm run docker-run  # docker run -d -p 8888:8888 --name vertx-api vertx-api
 
   mobile-app:
     runs-on: ubuntu-latest
