@@ -31,6 +31,7 @@ jobs:
       - name: Build Quarkus Docker image
         run: |
           cd Quarkus
+          chmod +x mvnw
           npm run docker-build  #docker build -t quarkus-api .
 
       - name: Run Quarkus Docker container
