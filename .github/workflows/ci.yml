@@ -30,10 +30,12 @@ jobs:
 
       - name: Build Quarkus Docker image
         run: |
+          cd Quarkus
           npm run docker-build  #docker build -t quarkus-api .
 
       - name: Run Quarkus Docker container
         run: |
+          cd Quarkus
           npm run docker-run  #docker run -d -p 9999:9999 --name quarkus-api quarkus-api
 
   vertx-api:
