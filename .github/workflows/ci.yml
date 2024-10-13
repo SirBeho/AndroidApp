@@ -3,33 +3,71 @@ name: CI/CD Pipeline
 on:
   pull_request:
     branches:
-      - master  
-
-      
+      - master
 
 jobs:
-  build:
+  quarkus-api:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Set up Node.js (si es una app Node.js)
-      uses: actions/setup-node@v2
-      with:
-        node-version: '14'
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
 
-    - name: Install dependencies
-      run: npm install
+      - name: Build Quarkus Docker image
+        run: |
+          cd Quarkus
+          npm run docker-build  # Ejecuta docker build -t quarkus-api .
 
-    - name: Run tests
-      run: npm test
+      - name: Run Quarkus Docker container
+        run: |
+          npm run docker-run  # Ejecuta docker run -d -p 9999:9999 --name quarkus-api quarkus-api
 
-    - name: Build Docker image
-      run: docker build -t myapp .
+  vertx-api:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Simulate deployment
-      if: github.event.pull_request.merged == true  # Desplegar solo si el PR ha sido mergeado
-      run: |
-        echo "Simulating deployment..."
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Build Vert.x Docker image
+        run: |
+          cd Vertex
+          npm run docker-build  # Ejecuta docker build -t vertx-api .
+
+      - name: Run Vert.x Docker container
+        run: |
+          npm run docker-run  # Ejecuta docker run -d -p 8888:8888 --name vertx-api vertx-api
+
+  mobile-app:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: Set up Android environment
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y android-sdk
+          export ANDROID_SDK_ROOT=$HOME/Android/Sdk
+
+      - name: Install NativeScript CLI
+        run: npm install -g nativescript
+
+      - name: Build and Run NativeScript app
+        run: |
+          cd NativeScript
+          npm run dev  # Ejecuta 'ns run android'
+
