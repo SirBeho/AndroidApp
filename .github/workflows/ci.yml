@@ -7,7 +7,7 @@ on:
 
 jobs:
   quarkus-api:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -15,16 +15,26 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '14'
+
+      - name: Set up Maven
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Build Quarkus API
+        run: |
+          cd path/to/quarkus-api-folder
+          ./mvnw clean package 
 
       - name: Build Quarkus Docker image
         run: |
-          cd Quarkus
-          npm run docker-build  # Ejecuta docker build -t quarkus-api .
+          npm run docker-build  #docker build -t quarkus-api .
 
       - name: Run Quarkus Docker container
         run: |
-          npm run docker-run  # Ejecuta docker run -d -p 9999:9999 --name quarkus-api quarkus-api
+          npm run docker-run  #docker run -d -p 9999:9999 --name quarkus-api quarkus-api
 
   vertx-api:
     runs-on: ubuntu-latest
