@@ -29,10 +29,19 @@ jobs:
           chmod +x mvnw
           npm run docker-build  #docker build -t quarkus-api .
 
-      - name: Run Quarkus Docker container
+      - name: Login to Amazon ECR
         run: |
-          cd Quarkus
-          npm run docker-run  #docker run -d -p 9999:9999 --name quarkus-api quarkus-api
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 637423234931.dkr.ecr.us-east-1.amazonaws.com
+      
+      - name: Push Quarkus Docker image to ECR
+        run: |
+          docker tag quarkus-api:latest 637423234931.dkr.ecr.us-east-1.amazonaws.com/quarkus-api:latest
+          docker push 637423234931.dkr.ecr.us-east-1.amazonaws.com/quarkus-api:latest       
+
+      - name: Update ECS service for Quarkus API
+        run: |
+          aws ecs update-service --cluster quarkus-api-cluster --service quarkus-api-service --force-new-deployment --region us-east-1
+
 
   vertx-api:
     runs-on: ubuntu-latest
@@ -50,10 +59,18 @@ jobs:
           cd Vertex
           npm run docker-build  # docker build -t vertx-api .
 
-      - name: Run Vert.x Docker container
+      - name: Login to Amazon ECR
         run: |
-          cd Vertex
-          npm run docker-run  # docker run -d -p 8888:8888 --name vertx-api vertx-api
+           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 637423234931.dkr.ecr.us-east-1.amazonaws.com
+
+      - name: Push Vert.x Docker image to ECR
+        run: |
+          docker tag vertx-api:latest 637423234931.dkr.ecr.us-east-1.amazonaws.com/vertx-api:latest
+          docker push 637423234931.dkr.ecr.us-east-1.amazonaws.com/vertx-api:latest
+          
+      - name: Update ECS service for Vert.x API
+        run: |
+          aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region <your-region>    
 
   nativescrip-app:
     runs-on: ubuntu-latest
