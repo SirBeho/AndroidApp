@@ -7,6 +7,7 @@ on:
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read  # This is required for actions/checkout
+
 jobs:
   quarkus-api:
     runs-on: ubuntu-latest
@@ -83,7 +84,7 @@ jobs:
           
       - name: Update ECS service for Vert.x API
         run: |
-          aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region <your-region>    
+          aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region us-east-1 
 
   nativescrip-app:
     runs-on: ubuntu-latest
