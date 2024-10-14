@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - dev
+  push:
+    branches:
+      - dev
+
 permissions:
   id-token: write # This is required for requesting the JWT
   contents: read  # This is required for actions/checkout
@@ -33,21 +37,25 @@ jobs:
           npm run docker-build  #docker build -t quarkus-api .
       
       - name: Configure AWS credentials
+        if: github.event_name == 'push'
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::637423234931:role/AWS-Permisos
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
+        if: github.event_name == 'push'
         run: |
           aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 637423234931.dkr.ecr.us-east-1.amazonaws.com
       
       - name: Push Quarkus Docker image to ECR
+        if: github.event_name == 'push'
         run: |
           docker tag quarkus-api:latest 637423234931.dkr.ecr.us-east-1.amazonaws.com/quarkus-api:latest
           docker push 637423234931.dkr.ecr.us-east-1.amazonaws.com/quarkus-api:latest       
 
       - name: Update ECS service for Quarkus API
+        if: github.event_name == 'push'
         run: |
           aws ecs update-service --cluster quarkus-api-cluster --service quarkus-api-service --force-new-deployment --region us-east-1
 
@@ -68,21 +76,25 @@ jobs:
           npm run docker-build  # docker build -t vertx-api .
 
       - name: Configure AWS credentials
+        if: github.event_name == 'push'
         uses: aws-actions/configure-aws-credentials@v2
         with:
           role-to-assume: arn:aws:iam::637423234931:role/AWS-Permisos
           aws-region: us-east-1
 
       - name: Login to Amazon ECR
+        if: github.event_name == 'push'
         run: |
            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 637423234931.dkr.ecr.us-east-1.amazonaws.com
 
       - name: Push Vert.x Docker image to ECR
+        if: github.event_name == 'push'
         run: |
           docker tag vertx-api:latest 637423234931.dkr.ecr.us-east-1.amazonaws.com/vertx-api:latest
           docker push 637423234931.dkr.ecr.us-east-1.amazonaws.com/vertx-api:latest
           
       - name: Update ECS service for Vert.x API
+        if: github.event_name == 'push'
         run: |
           aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region us-east-1 
 
@@ -122,7 +134,6 @@ jobs:
       - name: Install NativeScript CLI
         run: npm install -g nativescript
 
-      
       - name: Build APK
         run: |
           export ANDROID_HOME=$HOME/android-sdk
