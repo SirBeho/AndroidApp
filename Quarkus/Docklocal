@@ -4,19 +4,17 @@ FROM eclipse-temurin:17-jdk AS build
 # Establecer directorio de trabajo
 WORKDIR /app
 
-# COPY target/quarkus-app/lib/ ./lib/
-# COPY target/quarkus-app/app/ ./app/
-# COPY target/quarkus-app/quarkus/ ./quarkus/
-# COPY target/quarkus-app/quarkus-run.jar ./
+COPY target/quarkus-app/lib/ ./lib/
+COPY target/quarkus-app/app/ ./app/
+COPY target/quarkus-app/quarkus/ ./quarkus/
+COPY target/quarkus-app/quarkus-run.jar ./
 # Copiar archivos de Maven
 COPY mvnw ./
 COPY .mvn/ .mvn/
-RUN chmod +x ./mvnw
+RUN chmod +x mvnw
 
 # Copiar archivo de configuración de Maven y descargar dependencias
 COPY pom.xml ./
-
-
 RUN ./mvnw dependency:go-offline
 
 # Copiar el código fuente
@@ -48,5 +46,4 @@ CMD ["java", "-jar", "quarkus-run.jar"]
 
 #docker run -d -p 9999:9999 --name quarkus-api quarkus-api
 
-#(Get-ECRLoginCommand).Password | docker login --username AWS --password-stdin 637423234931.dkr.ecr.us-east-1.amazonaws.com
 

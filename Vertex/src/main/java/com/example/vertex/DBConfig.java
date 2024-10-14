@@ -9,10 +9,10 @@ public class DBConfig {
 
     public static SQLClient getJDBCClient(Vertx vertx) {
         JsonObject config = new  JsonObject()
-        .put("url", "jdbc:mysql://host.docker.internal:3306/task_management")
+        .put("url", "jdbc:mysql://task-management.c3oqqceiwgmv.us-east-1.rds.amazonaws.com:3306/task_management")
         .put("driver_class", "com.mysql.cj.jdbc.Driver")
         .put("user", "root")
-        .put("password", "@Motor0009896")
+        .put("password", "Motor0009896")
         .put("max_pool_size", 30);
 
         return JDBCClient.createShared(vertx, config);
