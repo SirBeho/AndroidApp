@@ -159,30 +159,33 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-android-sdk
 
-    # 8. Crear y lanzar el emulador Android
-    - name: Create and start Android emulator
+    # Crear emulador Android si no existe
+    - name: Create Android Emulator
       run: |
-        echo "Creating Android emulator..."
+        sdkmanager "system-images;android-30;google_apis;x86_64"
         avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
-        emulator -avd test -no-audio -no-boot-anim -accel auto -gpu swiftshader_indirect &
+        $ANDROID_HOME/emulator/emulator -list-avds
+        $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-boot-anim -accel auto &
       env:
-        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
 
-    # 9. Esperar a que el emulador esté listo
+    # Esperar que el emulador esté disponible
     - name: Wait for emulator to start
-      run: adb wait-for-device
-      env:
-        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+      run: |
+        adb wait-for-device
+        adb shell input keyevent 82
 
     # 10. Ejecutar el build y probar la app en el emulador
-    - name: Build and run NativeScript app on Android emulator
+    - name: Build APK
       run: |
+        export ANDROID_HOME=$HOME/android-sdk
+        export ANDROID_SDK_ROOT=$ANDROID_HOME  # Forzar que ambas variables apunten al mismo lugar
+        export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
         cd NativeScript
-        ns build android --release
-        adb install ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
-        adb shell monkey -p org.nativescript.app -c android.intent.category.LAUNCHER 1
-      env:
-        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+        ns build android --no-uglify
+        
+    - name: Run app on emulator
+      run: ns run android --emulator
        
         
   nativescrip-app-request:
