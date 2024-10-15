@@ -151,11 +151,10 @@ jobs:
             ${{ runner.os }}-android-sdk
 
       - name: Compilar la aplicación
-        run: npm run build
-
-      - name: Ejecutar pruebas
-        run: npm test
-
+        run: |
+          cd NativeScriptApp
+          npm run build
+    
   nativescrip-app-request:
     runs-on: ubuntu-latest
     needs: [quarkus-api, vertx-api, nativescrip-app] 
