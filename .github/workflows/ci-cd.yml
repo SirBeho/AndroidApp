@@ -145,17 +145,18 @@ jobs:
         cd NativeScript
         npm install
 
+    - name: Cache Android Build
+      uses: actions/cache@v3
+      with:
+        path: NativeScript/platforms/android/app/build
+        key: ${{ runner.os }}-native-build-${{ hashFiles('NativeScript/app/App_Resources/Android/app.gradle', 'NativeScript/app/App_Resources/Android/AndroidManifest.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-native-build
 
-    # 10. Ejecutar el build y probar la app en el emulador
     - name: Build APK
       run: |
         cd NativeScript
         ns build android --no-uglify
-        
-    - name: Run app on emulator
-      run: |
-          cd NativeScript
-          ns run android 
       
         
   nativescrip-app-request:
