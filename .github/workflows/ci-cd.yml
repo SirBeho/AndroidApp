@@ -132,7 +132,7 @@ jobs:
         run: unset ANDROID_SDK_ROOT
         
       - name: Install NativeScript CLI
-        run: npm install -g nativescript
+        run: npm install  -g nativescript
 
      
 
