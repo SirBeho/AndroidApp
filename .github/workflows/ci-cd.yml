@@ -37,7 +37,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           cd Quarkus
-          num run test
+          npm run test
       
       - name: Build Quarkus Docker image
         if: github.event_name == 'push'
@@ -87,7 +87,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           cd Vertex
-          num run test
+          npm run test
    
       - name: Build Vert.x Docker image
         if: github.event_name == 'push'
