@@ -110,14 +110,6 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
-      
-      - name: Cache node modules
-        uses: actions/cache@v2
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -149,15 +141,10 @@ jobs:
       - name: Install NativeScript CLI
         run: npm install -g nativescript
 
-      - name: Build NativeScript app
-        run: |
-          cd NativeScript
-          npm run build:android
-          
   nativescrip-app-request:
     runs-on: ubuntu-latest
     needs: [quarkus-api, vertx-api, nativescrip-app] 
-    if: github.event_name == 'push' 
+    
     env:
       QuarkusUrl: "http://main-829069404.us-east-1.elb.amazonaws.com"
       VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx"
