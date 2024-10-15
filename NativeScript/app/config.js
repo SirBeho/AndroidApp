@@ -7,7 +7,7 @@ export default {
 
     /*dispositivo*/
     WebSocketUrl: "ws://10.0.2.2:8888/updates",
-    VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx/",
+    VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx",
     QuarkusUrl : "http://main-829069404.us-east-1.elb.amazonaws.com"
 
 };

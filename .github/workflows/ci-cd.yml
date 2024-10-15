@@ -110,48 +110,25 @@ jobs:
     container:
       image: cirrusci/android-sdk:30
     steps:
-    # 1. Checkout del repositorio
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # 2. Configurar Node.js
     - name: Setup Node.js
       uses: actions/setup-node@v2
       with:
         node-version: '16'
 
-    # 3. Configurar Java
     - name: Setup Java
       uses: actions/setup-java@v2
       with:
         distribution: 'temurin'
         java-version: '17'
 
-    # 4. Cachear dependencias de npm para acelerar la instalación
-    - name: Cache npm dependencies
-      uses: actions/cache@v3
-      with:
-        path: |
-          ~/.npm
-          nativescript/node_modules
-        key: ${{ runner.os }}-npm-cache-${{ hashFiles('nativescript/package-lock.json') }}
-        restore-keys: |
-          ${{ runner.os }}-npm-cache-
-
-    # 5. Instalar dependencias de NativeScript
     - name: Install dependencies
       run: |
         npm install -g nativescript
         cd NativeScript
         npm install
-
-    - name: Cache Android Build
-      uses: actions/cache@v3
-      with:
-        path: NativeScript/platforms/android/app/build
-        key: ${{ runner.os }}-native-build-${{ hashFiles('NativeScript/app/App_Resources/Android/app.gradle', 'NativeScript/app/App_Resources/Android/AndroidManifest.xml') }}
-        restore-keys: |
-          ${{ runner.os }}-native-build
 
     - name: Build APK
       run: |
@@ -165,7 +142,7 @@ jobs:
     if: github.event_name == 'push' 
     env:
       QuarkusUrl: "http://main-829069404.us-east-1.elb.amazonaws.com"
-      VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx/"
+      VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx"
     steps:   
       - name: Checkout repository
         uses: actions/checkout@v2   
