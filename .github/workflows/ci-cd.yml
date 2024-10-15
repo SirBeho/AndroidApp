@@ -154,11 +154,11 @@ jobs:
         key: ${{ runner.os }}-android-build-${{ hashFiles('NativeScript/app/App_Resources/Android/app.gradle', 'NativeScript/app/App_Resources/Android/AndroidManifest.xml') }}
         restore-keys: |
           ${{ runner.os }}-android-build   
-            
+
     - name: Build APK
       run: |
         cd NativeScript
-        ns build android --release --no-uglify --no-aot --no-snapshot
+        ns build android --no-uglify 
 
       
         
