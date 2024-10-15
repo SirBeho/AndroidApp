@@ -32,9 +32,16 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-
-      - name: Build Quarkus Docker image
+        
+      - name: Run unit tests
         if: github.event_name == 'pull_request'
+        run: |
+          cd Quarkus
+          chmod +x mvnw
+          npm run test
+      
+      - name: Build Quarkus Docker image
+        if: github.event_name == 'push'
         run: |
           cd Quarkus
           chmod +x mvnw
@@ -77,8 +84,15 @@ jobs:
         with:
           node-version: '16'
 
-      - name: Build Vert.x Docker image
+      - name: Run unit tests
         if: github.event_name == 'pull_request'
+        run: |
+          cd Vertex
+          chmod +x mvnw
+          npm run test
+   
+      - name: Build Vert.x Docker image
+        if: github.event_name == 'push'
         run: |
           cd Vertex
           npm run docker-build  # docker build -t vertx-api .
@@ -111,6 +125,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: cirrusci/android-sdk:30
+    if: github.event_name == 'pull_request'
     steps:
     - name: Checkout repository
       uses: actions/checkout@v2
@@ -127,14 +142,12 @@ jobs:
         java-version: '17'
 
     - name: Install dependencies
-      if: github.event_name == 'pull_request'
       run: |
         npm install -g nativescript
         cd NativeScript
         npm install
 
     - name: Build APK
-      if: github.event_name == 'pull_request'
       run: |
         cd NativeScript
         ns build android --no-uglify
