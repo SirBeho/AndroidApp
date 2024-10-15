@@ -153,8 +153,10 @@ jobs:
         ns build android --no-uglify
         
     - name: Run app on emulator
-      run: ns run android --emulator
-       
+      run: |
+          cd NativeScript
+          ns run android 
+      
         
   nativescrip-app-request:
     runs-on: ubuntu-latest
