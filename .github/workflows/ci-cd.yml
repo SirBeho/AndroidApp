@@ -122,19 +122,18 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Establecer prefijo NPM
-        run: npm config set prefix '~/.npm-global'
-
-      - name: Cachear Módulos NPM Globales
+      - name: Cachear dependencias NPM
         uses: actions/cache@v3
         with:
-          path: ~/.npm-global
-          key: ${{ runner.os }}-npm-global
+          path: |
+            nativescript/node_modules
+          key: ${{ runner.os }}-npm-cache-${{ hashFiles('nativescript/package-lock.json') }}
           restore-keys: |
-            ${{ runner.os }}-npm-global
+            ${{ runner.os }}-npm-cache-
 
-      - name: Instalar NativeScript CLI
-        run: npm install -g nativescript
+      - name: Instalar dependencias
+        run: npm ci
+        working-directory: nativescript
 
       - name: Configurar SDK de Android
         uses: android-actions/setup-android@v2
@@ -151,9 +150,9 @@ jobs:
             ${{ runner.os }}-android-sdk
 
       - name: Compilar la aplicación
-        run: |
-          cd NativeScript
-          npm run build
+        run: npx tns build android
+        working-directory: nativescript
+          
     
   nativescrip-app-request:
     runs-on: ubuntu-latest
