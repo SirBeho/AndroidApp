@@ -122,6 +122,22 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Install Android Build Tools and SDK
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget tar unzip
+          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
+          mkdir -p $HOME/android-sdk
+          unzip commandlinetools-linux-8092744_latest.zip -d $HOME/android-sdk/cmdline-tools
+          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/tools
+          export ANDROID_HOME=$HOME/android-sdk
+          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+          yes | sdkmanager --licenses
+          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
+        
+      - name: Ensure ANDROID_SDK_ROOT is unset
+        run: unset ANDROID_SDK_ROOT
+
       - name: Instalar dependencias
         run: |
           cd NativeScript
