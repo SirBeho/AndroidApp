@@ -5,7 +5,7 @@
     "scripts": {
         "dev": "mvnw clean compile exec:java",
         "build": "mvnw clean package",
-        "test": "mvnw test",
+        "test": "./mvnw test",
         "clean": "mvnw clean",
         "start": "java -jar target/vertx-api-1.0.0-fat.jar",
         "docker-build": "docker build -t vertx-api .",
