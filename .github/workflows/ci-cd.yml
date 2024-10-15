@@ -37,6 +37,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           cd Quarkus
+          chmod +x mvnw
           npm run test
       
       - name: Build Quarkus Docker image
@@ -87,6 +88,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           cd Vertex
+          chmod +x mvnw
           npm run test
    
       - name: Build Vert.x Docker image
