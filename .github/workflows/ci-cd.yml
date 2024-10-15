@@ -32,20 +32,23 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
+        
+      - name: Set executable permissions for Maven wrapper
+        if: github.event_name == 'pull_request'
+        run: chmod +x ./mvnw
 
       - name: Build the API
-        if: github.event_name == 'pull_request'
+        if: github.event_name == 'pull_request' 
         run: |
-          cd Vertex
+          cd Quarkus  
           ./mvnw clean compile
         
       - name: Run unit tests
         if: github.event_name == 'pull_request'
         run: |
-          cd Vertex
+          cd Quarkus
           ./mvnw test
       
-
       - name: Build Quarkus Docker image
         if: github.event_name == 'push'
         run: |
@@ -89,6 +92,10 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: '16'
+
+      - name: Set executable permissions for Maven wrapper
+        if: github.event_name == 'pull_request'
+        run: chmod +x ./mvnw
 
       - name: Build the API
         if: github.event_name == 'pull_request'
