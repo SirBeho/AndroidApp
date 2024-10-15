@@ -108,51 +108,81 @@ jobs:
   nativescrip-app:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v2
+    # 1. Checkout del repositorio
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
+    # 2. Configurar Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
 
-      - name: Configurar Java
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+    # 3. Configurar Java
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-      - name: Install Android Build Tools and SDK
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget tar unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
-          mkdir -p $HOME/android-sdk
-          unzip commandlinetools-linux-8092744_latest.zip -d $HOME/android-sdk/cmdline-tools
-          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/tools
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
-          yes | sdkmanager --licenses
-          sdkmanager  "platform-tools" "platforms;android-30" "build-tools;30.0.3"
-        
-      - name: Ensure ANDROID_SDK_ROOT is unset
-        run: unset ANDROID_SDK_ROOT
+    # 4. Cachear dependencias de npm para acelerar la instalación
+    - name: Cache npm dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.npm
+          nativescript/node_modules
+        key: ${{ runner.os }}-npm-cache-${{ hashFiles('nativescript/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-cache-
 
-      - name: Instalar dependencias
-        run: |
-          cd NativeScript
-          npm install -g nativescript
+    # 5. Instalar dependencias de NativeScript
+    - name: Install dependencies
+      run: |
+        npm install -g nativescript
+        cd NativeScript
+        npm install
 
-      - name: Configurar SDK de Android
-        uses: android-actions/setup-android@v2
-        with:
-          api-levels: '30'
-          build-tools: '30.0.3'
+    # 6. Configurar SDK de Android (API level y build tools)
+    - name: Setup Android SDK
+      uses: android-actions/setup-android@v2
+      with:
+        api-levels: '30'
+        build-tools: '30.0.3'
 
-      - name: Compilar la aplicación
-        run: |
-          cd NativeScript
-          ns run android
+    # 7. Cachear el SDK de Android para evitar descargas repetidas
+    - name: Cache Android SDK
+      uses: actions/cache@v3
+      with:
+        path: ${{ env.ANDROID_SDK_ROOT }}
+        key: ${{ runner.os }}-android-sdk
+        restore-keys: |
+          ${{ runner.os }}-android-sdk
+
+    # 8. Crear y lanzar el emulador Android
+    - name: Create and start Android emulator
+      run: |
+        echo "Creating Android emulator..."
+        avdmanager create avd -n test -k "system-images;android-30;google_apis;x86_64" --force
+        emulator -avd test -no-audio -no-boot-anim -accel auto -gpu swiftshader_indirect &
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+
+    # 9. Esperar a que el emulador esté listo
+    - name: Wait for emulator to start
+      run: adb wait-for-device
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
+
+    # 10. Ejecutar el build y probar la app en el emulador
+    - name: Build and run NativeScript app on Android emulator
+      run: |
+        cd NativeScript
+        ns build android --release
+        adb install ./platforms/android/app/build/outputs/apk/debug/app-debug.apk
+        adb shell monkey -p org.nativescript.app -c android.intent.category.LAUNCHER 1
+      env:
+        ANDROID_SDK_ROOT: ${{ env.ANDROID_SDK_ROOT }}
        
         
   nativescrip-app-request:
