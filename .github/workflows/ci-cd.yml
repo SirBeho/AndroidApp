@@ -141,7 +141,20 @@ jobs:
         with:
           api-levels: '30'
           build-tools: '30.0.3'
-    
+
+      - name: Cachear SDK de Android
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.ANDROID_SDK_ROOT }}
+          key: ${{ runner.os }}-android-sdk
+          restore-keys: |
+            ${{ runner.os }}-android-sdk
+
+      - name: Compilar la aplicación
+        run: npm run build
+
+      - name: Ejecutar pruebas
+        run: npm test
 
   nativescrip-app-request:
     runs-on: ubuntu-latest

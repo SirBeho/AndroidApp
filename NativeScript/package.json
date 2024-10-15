@@ -7,6 +7,7 @@
     "dev": "ns run android",
     "clean": "rm -rf node_modules hooks platforms package-lock.json",
     "setup": "npm install",
+    "build": "tns build android",
     "rebuild": "npm run clean && npm run setup && ns run android",
     "build:android": "ns build android"
   },
