@@ -133,8 +133,8 @@ jobs:
       with:
         path: |
           ~/.npm
-          nativescript/node_modules
-        key: ${{ runner.os }}-npm-cache-${{ hashFiles('nativescript/package-lock.json') }}
+          NativeScript/node_modules
+        key: ${{ runner.os }}-npm-cache-${{ hashFiles('NativeScript/package-lock.json') }}
         restore-keys: |
           ${{ runner.os }}-npm-cache-
 
@@ -165,7 +165,7 @@ jobs:
     if: github.event_name == 'push' 
     env:
       QuarkusUrl: "http://main-829069404.us-east-1.elb.amazonaws.com"
-      VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx/"
+      VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx"
     steps:   
       - name: Checkout repository
         uses: actions/checkout@v2   
