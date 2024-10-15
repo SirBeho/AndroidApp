@@ -111,6 +111,12 @@ jobs:
       ANDROID_HOME: $HOME/android-sdk
       PATH: $ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
     steps:
+
+      - name: Install necessary tools (tar, unzip, etc.)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tar unzip wget
+          
       - name: Checkout repository
         uses: actions/checkout@v2
       
