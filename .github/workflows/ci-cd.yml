@@ -134,7 +134,7 @@ jobs:
       - name: Instalar dependencias
         run: |
           cd NativeScript
-          npm ci
+          npm install -g nativescript
 
       - name: Configurar SDK de Android
         uses: android-actions/setup-android@v2
