@@ -147,7 +147,7 @@ jobs:
     if: github.event_name == 'push' 
     env:
       QuarkusUrl: "http://main-829069404.us-east-1.elb.amazonaws.com"
-      VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx"
+      VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx/"
     steps:   
       - name: Checkout repository
         uses: actions/checkout@v2   
