@@ -175,23 +175,46 @@ jobs:
 
       - name: Validate connection to Quarkus API
         run: |
-          response=$(curl --write-out "%{http_code}" --silent --output /dev/null ${QuarkusUrl}/hello)
-          if [ "$response" != "200" ]; then
-            echo "Quarkus API not reachable. HTTP Status: $response"
-            exit 1
-          else
-            echo "Quarkus API is reachable"
-          fi
-
+          retries=0
+          max_retries=10
+          while [ $retries -lt $max_retries ]; do
+            response=$(curl --write-out "%{http_code}" --silent --output /dev/null ${QuarkusUrl}/hello)
+            if [ "$response" == "200" ]; then
+              echo "Quarkus API is reachable"
+              break
+            else
+              echo "Quarkus API not reachable. HTTP Status: $response"
+              retries=$((retries + 1))
+              if [ $retries -eq $max_retries ]; then
+                echo "Max retries reached. Exiting."
+                exit 1
+              fi
+              echo "Retrying in 5 seconds... ($retries/$max_retries)"
+              sleep 5
+            fi
+          done
+      
       - name: Validate connection to Vert.x API
         run: |
-          response=$(curl --write-out "%{http_code}" --silent --output /dev/null ${VertxUrl}/hello)
-          if [ "$response" != "200" ]; then
-            echo "Vert.x API not reachable. HTTP Status: $response"
-            exit 1
-          else
-            echo "Vert.x API is reachable"
-          fi
+          retries=0
+          max_retries=10
+          while [ $retries -lt $max_retries ]; do
+            response=$(curl --write-out "%{http_code}" --silent --output /dev/null ${VertxUrl}/hello)
+            if [ "$response" == "200" ]; then
+              echo "Vert.x API is reachable"
+              break
+            else
+              echo "Vert.x API not reachable. HTTP Status: $response"
+              retries=$((retries + 1))
+              if [ $retries -eq $max_retries ]; then
+                echo "Max retries reached. Exiting."
+                exit 1
+              fi
+              echo "Retrying in 5 seconds... ($retries/$max_retries)"
+              sleep 5
+            fi
+          done
+      
      
 
 
