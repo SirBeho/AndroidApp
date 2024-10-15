@@ -63,12 +63,6 @@ public class MainVerticle extends AbstractVerticle {
     router.post("/task/:taskId").handler(this::processTaskById);
     router.get("/task/status/:taskId").handler(this::getTaskStatus);
 
-    //agregar prefijo /vertx/*  a todas las rutas
-    router.route("/vertx/*").handler(ctx -> {
-      ctx.response().putHeader("content-type", "application/json");
-      ctx.next();
-    });
-
     mainRouter.route("/vertx/*").subRouter(router);
 
     
