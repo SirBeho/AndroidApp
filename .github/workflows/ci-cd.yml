@@ -4,6 +4,7 @@ on:
   pull_request:
     branches:
       - master
+
   push:
     branches:
       - master
@@ -96,7 +97,7 @@ jobs:
       - name: Update ECS service for Vert.x API
         if: github.event_name == 'push'
         run: |
-          aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region us-east-1 
+          aws ecs  update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region us-east-1 
 
   nativescrip-app:
     runs-on: ubuntu-latest
