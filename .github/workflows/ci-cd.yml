@@ -152,7 +152,7 @@ jobs:
 
       - name: Compilar la aplicación
         run: |
-          cd NativeScriptApp
+          cd NativeScript
           npm run build
     
   nativescrip-app-request:
