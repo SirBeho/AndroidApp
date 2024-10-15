@@ -132,8 +132,9 @@ jobs:
             ${{ runner.os }}-npm-cache-
 
       - name: Instalar dependencias
-        run: npm ci
-        working-directory: nativescript
+        run: |
+          cd NativeScript
+          npm ci
 
       - name: Configurar SDK de Android
         uses: android-actions/setup-android@v2
@@ -150,8 +151,10 @@ jobs:
             ${{ runner.os }}-android-sdk
 
       - name: Compilar la aplicación
-        run: npx tns build android
-        working-directory: nativescript
+        run: |
+          cd NativeScript
+          npx tns build android
+       
           
     
   nativescrip-app-request:
