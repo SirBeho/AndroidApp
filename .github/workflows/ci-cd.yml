@@ -103,7 +103,7 @@ jobs:
         id: check
         if: github.event_name == 'push'
         run: |
-          aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service2 --force-new-deployment --region us-east-1 
+          aws ecs update-service --cluster vertx-api-cluster --service vertx-service --force-new-deployment --region us-east-1 
 
   nativescrip-app:
     runs-on: ubuntu-latest
