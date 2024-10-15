@@ -147,15 +147,24 @@ jobs:
         cd NativeScript
         npm install
 
+    - name: Cache Android build
+      uses: actions/cache@v3
+      with:
+        path: NativeScript/platforms/android/app/build
+        key: ${{ runner.os }}-android-build-${{ hashFiles('NativeScript/app/App_Resources/Android/app.gradle', 'NativeScript/app/App_Resources/Android/AndroidManifest.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-android-build   
+            
     - name: Build APK
       run: |
         cd NativeScript
-        ns build android --no-uglify
+        ns build android --release --no-uglify --no-aot --no-snapshot
+
       
         
   nativescrip-app-request:
     runs-on: ubuntu-latest
-    needs: [quarkus-api, vertx-api, nativescrip-app] 
+    needs: [quarkus-api, vertx-api] 
     if: github.event_name == 'push' 
     env:
       QuarkusUrl: "http://main-829069404.us-east-1.elb.amazonaws.com"
