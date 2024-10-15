@@ -144,6 +144,7 @@ jobs:
   nativescrip-app-request:
     runs-on: ubuntu-latest
     needs: [quarkus-api, vertx-api, nativescrip-app] 
+    if: github.event_name == 'push' 
     env:
       QuarkusUrl: "http://main-829069404.us-east-1.elb.amazonaws.com"
       VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx"
