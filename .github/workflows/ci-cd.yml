@@ -107,9 +107,28 @@ jobs:
 
   nativescrip-app:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_HOME: $HOME/android-sdk
+      PATH: $ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Cache Android SDK
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.ANDROID_HOME }}
+          key: ${{ runner.os }}-android-sdk-${{ hashFiles('build.gradle') }}
+          restore-keys: |
+            ${{ runner.os }}-android-sdk-
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
@@ -126,20 +145,23 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y wget tar unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
-          mkdir -p $HOME/android-sdk
-          unzip commandlinetools-linux-8092744_latest.zip -d $HOME/android-sdk/cmdline-tools
-          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/tools
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
+          if [ ! -d "$ANDROID_HOME" ]; then
+            wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
+            mkdir -p $ANDROID_HOME/cmdline-tools
+            unzip commandlinetools-linux-8092744_latest.zip -d $ANDROID_HOME/cmdline-tools
+            mv $ANDROID_HOME/cmdline-tools/cmdline-tools $ANDROID_HOME/cmdline-tools/tools
+          fi
           yes | sdkmanager --licenses
           sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
         
-      - name: Ensure ANDROID_SDK_ROOT is unset
-        run: unset ANDROID_SDK_ROOT
-        
       - name: Install NativeScript CLI
         run: npm install -g nativescript
+
+      - name: Build NativeScript app
+        run: |
+          cd NativeScript
+          ns build android
+
 
   nativescrip-app-request:
     runs-on: ubuntu-latest
