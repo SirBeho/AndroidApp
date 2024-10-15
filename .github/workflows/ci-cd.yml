@@ -136,7 +136,7 @@ jobs:
       - name: Compilar la aplicación
         run: |
           cd NativeScript
-          npx tns build android
+          ns run android
        
         
   nativescrip-app-request:
