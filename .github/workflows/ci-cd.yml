@@ -112,11 +112,6 @@ jobs:
       PATH: $ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
     steps:
 
-      - name: Install necessary tools
-        run: |
-          apt-get update
-          apt-get install -y tar unzip wget
-
       - name: Checkout repository
         uses: actions/checkout@v2
       
@@ -127,14 +122,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-
-      - name: Cache Android SDK
-        uses: actions/cache@v2
-        with:
-          path: ${{ env.ANDROID_HOME }}
-          key: ${{ runner.os }}-android-sdk-${{ hashFiles('build.gradle') }}
-          restore-keys: |
-            ${{ runner.os }}-android-sdk-
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
