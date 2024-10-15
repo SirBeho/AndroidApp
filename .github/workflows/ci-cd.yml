@@ -61,7 +61,7 @@ jobs:
         id: check  
         if: github.event_name == 'push'
         run: |
-          aws ecs update-service --cluster quarkus-api-cluster --service quarkus-api-service --force-new-deployment --region us-east-1
+          aws ecs update-service --cluster quarkus-api-cluster --service quarkus-api-service2 --force-new-deployment --region us-east-1
 
   vertx-api:
     runs-on: ubuntu-latest
@@ -103,60 +103,62 @@ jobs:
         id: check
         if: github.event_name == 'push'
         run: |
-          aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region us-east-1 
+          aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service2 --force-new-deployment --region us-east-1 
 
   nativescrip-app:
     runs-on: ubuntu-latest
+    container:
+      image: cirrusci/android-sdk:30
     steps:
-      - name: Checkout del repositorio
-        uses: actions/checkout@v2
+    # 1. Checkout del repositorio
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Configurar Node.js
-        uses: actions/setup-node@v2
-        with:
-          node-version: '16'
+    # 2. Configurar Node.js
+    - name: Setup Node.js
+      uses: actions/setup-node@v2
+      with:
+        node-version: '16'
 
-      - name: Configurar Java
-        uses: actions/setup-java@v2
-        with:
-          distribution: 'temurin'
-          java-version: '17'
+    # 3. Configurar Java
+    - name: Setup Java
+      uses: actions/setup-java@v2
+      with:
+        distribution: 'temurin'
+        java-version: '17'
 
-      - name: Cachear dependencias NPM
-        uses: actions/cache@v3
-        with:
-          path: |
-            nativescript/node_modules
-          key: ${{ runner.os }}-npm-cache-${{ hashFiles('nativescript/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-npm-cache-
+    # 4. Cachear dependencias de npm para acelerar la instalación
+    - name: Cache npm dependencies
+      uses: actions/cache@v3
+      with:
+        path: |
+          ~/.npm
+          nativescript/node_modules
+        key: ${{ runner.os }}-npm-cache-${{ hashFiles('nativescript/package-lock.json') }}
+        restore-keys: |
+          ${{ runner.os }}-npm-cache-
 
-      - name: Instalar dependencias
-        run: |
-          cd NativeScript
-          npm install -g nativescript
+    # 5. Instalar dependencias de NativeScript
+    - name: Install dependencies
+      run: |
+        npm install -g nativescript
+        cd NativeScript
+        npm install
 
-      - name: Configurar SDK de Android
-        uses: android-actions/setup-android@v2
-        with:
-          api-levels: '30'
-          build-tools: '30.0.3'
+    - name: Cache Android Build
+      uses: actions/cache@v3
+      with:
+        path: NativeScript/platforms/android/app/build
+        key: ${{ runner.os }}-native-build-${{ hashFiles('NativeScript/app/App_Resources/Android/app.gradle', 'NativeScript/app/App_Resources/Android/AndroidManifest.xml') }}
+        restore-keys: |
+          ${{ runner.os }}-native-build
 
-      - name: Cachear SDK de Android
-        uses: actions/cache@v3
-        with:
-          path: ${{ env.ANDROID_SDK_ROOT }}
-          key: ${{ runner.os }}-android-sdk
-          restore-keys: |
-            ${{ runner.os }}-android-sdk
-
-      - name: Compilar la aplicación
-        run: |
-          cd NativeScript
-          npx tns build android
-       
-          
-    
+    - name: Build APK
+      run: |
+        cd NativeScript
+        ns build android --no-uglify
+      
+        
   nativescrip-app-request:
     runs-on: ubuntu-latest
     needs: [quarkus-api, vertx-api, nativescrip-app] 

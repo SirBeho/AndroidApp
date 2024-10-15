@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@nativescript/android": "8.8.5",
+    "@nativescript/preview-cli": "1.0.13",
     "@nativescript/webpack": "^5.0.22",
     "nativescript-vue-template-compiler": "~2.9.3"
   }
