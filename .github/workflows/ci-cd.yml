@@ -16,6 +16,8 @@ permissions:
 jobs:
   quarkus-api:
     runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -56,12 +58,15 @@ jobs:
           docker push 637423234931.dkr.ecr.us-east-1.amazonaws.com/quarkus-api:latest       
 
       - name: Update ECS service for Quarkus API
+        id: check  
         if: github.event_name == 'push'
         run: |
           aws ecs update-service --cluster quarkus-api-cluster --service quarkus-api-service --force-new-deployment --region us-east-1
 
   vertx-api:
     runs-on: ubuntu-latest
+    outputs:
+      result: ${{ steps.check.outputs.result }}
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
@@ -95,6 +100,7 @@ jobs:
           docker push 637423234931.dkr.ecr.us-east-1.amazonaws.com/vertx-api:latest
           
       - name: Update ECS service for Vert.x API
+        id: check
         if: github.event_name == 'push'
         run: |
           aws ecs update-service --cluster vertx-api-cluster --service vertx-api-service --force-new-deployment --region us-east-1 
@@ -135,6 +141,36 @@ jobs:
       - name: Install NativeScript CLI
         run: npm install -g nativescript
 
+  nativescrip-app-request:
+    runs-on: ubuntu-latest
+    needs: [quarkus-api, vertx-api, nativescrip-app] 
+    if: github.event_name == 'push' 
+    env:
+      QuarkusUrl: "http://main-829069404.us-east-1.elb.amazonaws.com"
+      VertxUrl: "http://main-829069404.us-east-1.elb.amazonaws.com/vertx"
+    steps:   
+      - name: Checkout repository
+        uses: actions/checkout@v2   
+
+      - name: Validate connection to Quarkus API
+        run: |
+          response=$(curl --write-out "%{http_code}" --silent --output /dev/null ${QuarkusUrl}/hello)
+          if [ "$response" != "200" ]; then
+            echo "Quarkus API not reachable. HTTP Status: $response"
+            exit 1
+          else
+            echo "Quarkus API is reachable"
+          fi
+
+      - name: Validate connection to Vert.x API
+        run: |
+          response=$(curl --write-out "%{http_code}" --silent --output /dev/null ${VertxUrl}/hello)
+          if [ "$response" != "200" ]; then
+            echo "Vert.x API not reachable. HTTP Status: $response"
+            exit 1
+          else
+            echo "Vert.x API is reachable"
+          fi
      
 
 

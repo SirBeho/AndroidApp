@@ -40,6 +40,8 @@ public class MainVerticle extends AbstractVerticle {
     ObjectMapper prettyMapper = DatabindCodec.prettyMapper();
     vertx.deployVerticle(new WebSocketServer());
     
+    
+
 
     mapper.registerModule(new JavaTimeModule());
     mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
@@ -49,6 +51,7 @@ public class MainVerticle extends AbstractVerticle {
     dbUtils = new DBUtils(vertx);
     taskManager = new TaskManager(vertx,dbUtils);
     Router router = Router.router(vertx);
+    Router mainRouter = Router.router(vertx);
 
     //ruta hoa desde vertx
     router.get("/hello").handler(ctx -> {
@@ -60,8 +63,18 @@ public class MainVerticle extends AbstractVerticle {
     router.post("/task/:taskId").handler(this::processTaskById);
     router.get("/task/status/:taskId").handler(this::getTaskStatus);
 
+    //agregar prefijo /vertx/*  a todas las rutas
+    router.route("/vertx/*").handler(ctx -> {
+      ctx.response().putHeader("content-type", "application/json");
+      ctx.next();
+    });
+
+    mainRouter.route("/vertx/*").subRouter(router);
+
+    
+
     // Inicializar servidor HTTP
-    vertx.createHttpServer().requestHandler(router).listen(8888).onComplete(http -> {
+    vertx.createHttpServer().requestHandler(mainRouter).listen(8888).onComplete(http -> {
 
       if (http.succeeded()) {
         startPromise.complete();
