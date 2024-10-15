@@ -108,38 +108,40 @@ jobs:
   nativescrip-app:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout del repositorio
         uses: actions/checkout@v2
 
-      - name: Set up Node.js
+      - name: Configurar Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '16'
 
-      - name: Set up Java
+      - name: Configurar Java
         uses: actions/setup-java@v2
         with:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Install Android Build Tools and SDK
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y wget tar unzip
-          wget https://dl.google.com/android/repository/commandlinetools-linux-8092744_latest.zip
-          mkdir -p $HOME/android-sdk
-          unzip commandlinetools-linux-8092744_latest.zip -d $HOME/android-sdk/cmdline-tools
-          mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/tools
-          export ANDROID_HOME=$HOME/android-sdk
-          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
-          yes | sdkmanager --licenses
-          sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3"
-        
-      - name: Ensure ANDROID_SDK_ROOT is unset
-        run: unset ANDROID_SDK_ROOT
-        
-      - name: Install NativeScript CLI
+      - name: Establecer prefijo NPM
+        run: npm config set prefix '~/.npm-global'
+
+      - name: Cachear Módulos NPM Globales
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm-global
+          key: ${{ runner.os }}-npm-global
+          restore-keys: |
+            ${{ runner.os }}-npm-global
+
+      - name: Instalar NativeScript CLI
         run: npm install -g nativescript
+
+      - name: Configurar SDK de Android
+        uses: android-actions/setup-android@v2
+        with:
+          api-levels: '30'
+          build-tools: '30.0.3'
+    
 
   nativescrip-app-request:
     runs-on: ubuntu-latest
