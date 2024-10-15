@@ -3,10 +3,10 @@ name: CI/CD Pipeline
 on:
   pull_request:
     branches:
-      - dev
+      - master
   push:
     branches:
-      - dev
+      - master
 
 permissions:
   id-token: write # This is required for requesting the JWT
@@ -134,12 +134,6 @@ jobs:
       - name: Install NativeScript CLI
         run: npm install -g nativescript
 
-      - name: Build APK
-        run: |
-          export ANDROID_HOME=$HOME/android-sdk
-          export ANDROID_SDK_ROOT=$ANDROID_HOME  # Forzar que ambas variables apunten al mismo lugar
-          export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$ANDROID_HOME/platform-tools:$PATH
-          cd NativeScript
-          ns build android --no-uglify  # O usa  --release si es necesario
+     
 
 
