@@ -138,7 +138,7 @@ El proyecto se ejecuta en los puertos `8080` (Quarkus) y `8888` (Vert.x) por def
 
 Asegúrate de tener configurado el servidor MySQL correctamente y modificar las credenciales en las aplicaciones según sea necesario.
 
-Para la fonfiguracion de los despliques en AWS debes crear los contenedores y modificar los comandos de desplieque en el pilene. Aqui una [guia](https://youtu.be/nxRaZrl1r7Y) de como fue la configuracion.
+Para la fonfiguracion de los despliques en AWS debes crear los contenedores y modificar los comandos de desplieque en el pilene. Aqui una [**guia de configuracion**](https://youtu.be/nxRaZrl1r7Y) de todo el proceso en AWS.
 
 ## Despliegue
 
