@@ -1,6 +1,5 @@
 # Proyecto Task Manager
-### <span style="display: inline-flex; align-items: center;gap:7px"><img src="https://simpleskill.icons.workers.dev/svg?i=vue.js" height="29" width="29" style="border-radius: 20%; border:solid 4px #42b883;padding:3px;padding-bottom:1px"> <img src="https://simpleskill.icons.workers.dev/svg?i=quarkus,eclipsevertdotx,nativescript" height="40"> <img src="https://simpleskill.icons.workers.dev/svg?i=mysql" height="35" style="border-radius: 20%; background-color: lightgray;padding:2px;">  <img src="https://skillicons.dev/icons?i=docker,firebase" height="40">   <img src="https://avatars.githubusercontent.com/u/130129149?v=4" height="38" style="border-radius: 20%" ></span>
-  </span>
+### <span style="display: inline-flex; align-items: center;gap:7px"><img src="https://simpleskill.icons.workers.dev/svg?i=vue.js" height="29" width="29" style="border-radius: 20%; border:solid 4px #42b883;padding:3px;padding-bottom:1px"> <img src="https://simpleskill.icons.workers.dev/svg?i=quarkus,eclipsevertdotx,nativescript" height="40"> <img src="https://simpleskill.icons.workers.dev/svg?i=mysql" height="35" style="border-radius: 20%; background-color: lightgray;padding:2px;"><img src="https://avatars.githubusercontent.com/u/130129149?v=4" height="38" style="border-radius: 20%" ></span> </span>  <img src="https://skillicons.dev/icons?i=docker,firebase,githubactions,aws,github" height="40">   
 
 
 
@@ -98,6 +97,18 @@ El proyecto consta de cuatro componentes principales:
   - Plataforma para empaquetar y desplegar aplicaciones en contenedores.
   - Utilizada para desplegar la API Vert.x, permitiendo una implementación consistente en cualquier entorno.
 
+ - **<span style="display: inline-flex; align-items: center;gap:10px"> <img src="https://skillicons.dev/icons?i=githubactions" height="30"> GitHub Actions (CI/CD Pipelines)** </span>
+   -  Implementación de pipelines CI/CD utilizando GitHub Actions para automatizar el despliegue de las APIs y la app móvil.
+   - El pipeline realiza pruebas automáticas, construye las imágenes Docker, y despliega los contenedores en AWS. 
+
+ - **<span style="display: inline-flex; align-items: center;gap:10px"> <img src="https://skillicons.dev/icons?i=aws" height="30"> Amazon Web Service** </span>
+    - Plataforma en la nube que ofrece una amplia gama de servicios para almacenamiento, cómputo y despliegue de aplicaciones, entre otros.
+    - Utilizada desplegar los contenedores Docker del backend mediante Amazon ECS, garantizando escalabilidad y alta disponibilidad para las APIs.
+
+ - **<span style="display: inline-flex; align-items: center;gap:10px"> <img src="https://skillicons.dev/icons?i=github" height="30"> GitHub** </span>
+    - Plataforma de alojamiento de código y control de versiones basada en Git, que permite la colaboración y el seguimiento de cambios en proyectos de software.
+    - Utilizado como sistema de control de versiones para gestionar el código fuente del proyecto, facilitando la gestión de cambios.
+
 ## Dependencias y Tecnologías Adicionales
 
 Para conocer todas las tecnologías y dependencias utilizadas en el proyecto, consulta los archivos `pom.xml` y `package.json` correspondientes a los componentes desarrollados en Java y JavaScript, respectivamente. Estos archivos contienen información detallada sobre las librerías, versiones y configuraciones necesarias para la construcción del proyecto.
@@ -126,6 +137,8 @@ Para conocer todas las tecnologías y dependencias utilizadas en el proyecto, co
 El proyecto se ejecuta en los puertos `8080` (Quarkus) y `8888` (Vert.x) por defecto, pero se puede cambiar esta configuración en los archivos de configuración correspondientes.
 
 Asegúrate de tener configurado el servidor MySQL correctamente y modificar las credenciales en las aplicaciones según sea necesario.
+
+Para la fonfiguracion de los despliques en AWS debes crear los contenedores y modificar los comandos de desplieque en el pilene. Aqui una [guia](https://youtu.be/nxRaZrl1r7Y) de como fue la configuracion.
 
 ## Despliegue
 
